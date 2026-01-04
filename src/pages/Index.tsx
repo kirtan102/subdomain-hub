@@ -12,7 +12,56 @@ import {
   Zap, 
   Server,
   ArrowRight,
+  Check,
 } from "lucide-react";
+
+const pricingPlans = [
+  {
+    name: "Free",
+    price: "$0",
+    period: "forever",
+    description: "Perfect for personal projects",
+    features: [
+      "1 subdomain",
+      "A & CNAME records",
+      "Community support",
+      "72h approval time",
+    ],
+    cta: "Get Started",
+    popular: false,
+  },
+  {
+    name: "Pro",
+    price: "$9",
+    period: "per month",
+    description: "For developers and small teams",
+    features: [
+      "10 subdomains",
+      "All record types",
+      "Priority support",
+      "24h approval time",
+      "Custom TTL",
+    ],
+    cta: "Upgrade to Pro",
+    popular: true,
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    period: "contact us",
+    description: "For organizations at scale",
+    features: [
+      "Unlimited subdomains",
+      "All record types",
+      "Dedicated support",
+      "Instant approval",
+      "Custom TTL",
+      "SLA guarantee",
+    ],
+    cta: "Contact Sales",
+    popular: false,
+  },
+];
 
 const features = [
   {
@@ -189,6 +238,68 @@ export default function Index() {
                 </Button>
               </Link>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section 
+        id="pricing"
+        ref={(el) => { sectionsRef.current[2] = el; }}
+        className="py-24 border-t border-border scroll-reveal"
+      >
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Simple Pricing
+            </h2>
+            <p className="text-muted-foreground">
+              Choose the plan that fits your needs.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {pricingPlans.map((plan) => (
+              <div
+                key={plan.name}
+                className={`glass glass-hover rounded-lg p-6 relative ${
+                  plan.popular ? 'ring-2 ring-foreground' : ''
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-foreground text-background text-xs font-medium px-3 py-1 rounded-full">
+                      Most Popular
+                    </span>
+                  </div>
+                )}
+                <div className="text-center mb-6">
+                  <h3 className="text-lg font-semibold mb-2">{plan.name}</h3>
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground text-sm ml-1">/{plan.period}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{plan.description}</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm">
+                      <Check className="w-4 h-4 text-foreground flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className={`w-full h-10 rounded-xl text-sm font-medium transition-colors ${
+                    plan.popular
+                      ? 'bg-foreground text-background hover:bg-foreground/90'
+                      : 'bg-background text-foreground border border-foreground'
+                  }`}
+                >
+                  {plan.cta}
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </section>
