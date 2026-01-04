@@ -87,23 +87,23 @@
   }
 }
 
-/* Grid background with fade */
+/* Grid background with radial fade */
 .grid-background {
   background-size: 60px 60px;
   background-image: 
-    linear-gradient(to right, hsl(0 0% 22% / 0.4) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(0 0% 22% / 0.4) 1px, transparent 1px);
+    linear-gradient(to right, hsl(0 0% 20% / 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(0 0% 20% / 0.35) 1px, transparent 1px);
 }
 
 .grid-background::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    hsl(0 0% 0%) 0%,
-    transparent 20%,
-    transparent 80%,
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    transparent 0%,
+    transparent 30%,
+    hsl(0 0% 0% / 0.7) 60%,
     hsl(0 0% 0%) 100%
   );
   pointer-events: none;
