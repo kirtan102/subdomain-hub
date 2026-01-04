@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, LayoutDashboard, Shield, User, Menu, X } from "lucide-react";
+import { LogOut, LayoutDashboard, Shield, User, Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 
 const navLinks = [
   { label: "Pricing", href: "#pricing" },
@@ -57,16 +58,8 @@ export function Navbar() {
         </Link>
 
         {/* Centered nav links - hidden on mobile/tablet */}
-        <div className="hidden lg:flex items-center gap-10">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
-            >
-              {link.label}
-            </a>
-          ))}
+        <div className="hidden lg:flex">
+          <AnimatedTabs tabs={navLinks} />
         </div>
 
         <div className="flex items-center gap-3">
