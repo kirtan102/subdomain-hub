@@ -70,17 +70,17 @@ export default function Index() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
         {/* Grid background */}
         <div className="absolute inset-0 grid-background" />
         {/* Spotlight glow */}
         <div className="spotlight" />
         
-        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center -mt-16 md:-mt-24">
-          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-manrope font-semibold mb-6 tracking-tight text-gradient-fade">
-            Get Subdomain
+        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center">
+          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
+            Get your subdomain
             <br />
-            In Seconds
+            in seconds.
           </h1>
 
           <p className="animate-slide-up opacity-0 stagger-2 text-lg text-muted-foreground max-w-lg mx-auto mb-10">
@@ -90,7 +90,7 @@ export default function Index() {
           <div className="animate-slide-up opacity-0 stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4">
             {user ? (
               <Link to="/dashboard">
-                <Button size="lg" className="h-12 px-8">
+                <Button size="lg">
                   Go to Dashboard
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -98,13 +98,13 @@ export default function Index() {
             ) : (
               <>
                 <Link to="/auth?mode=signup">
-                  <Button size="lg" className="h-12 px-8">
+                  <Button size="lg">
                     Get Started
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
                 <Link to="/auth">
-                  <Button variant="outline" size="lg" className="h-12 px-8">
+                  <Button variant="outline" size="lg">
                     Sign In
                   </Button>
                 </Link>

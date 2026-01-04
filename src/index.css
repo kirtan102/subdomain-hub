@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 0 0% 7%;
     --foreground: 0 0% 98%;
 
     --card: 0 0% 10%;
@@ -42,7 +42,7 @@
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 0%;
+    --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 0 0% 90%;
     --sidebar-primary: 0 0% 98%;
     --sidebar-primary-foreground: 0 0% 7%;
@@ -56,7 +56,7 @@
   }
 
   .dark {
-    --background: 0 0% 0%;
+    --background: 0 0% 7%;
     --foreground: 0 0% 98%;
   }
 }
@@ -87,14 +87,26 @@
   }
 }
 
-/* Grid background with radial fade */
+/* Grid background with fade */
 .grid-background {
   background-size: 60px 60px;
   background-image: 
-    linear-gradient(to right, hsl(0 0% 100% / 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(0 0% 100% / 0.08) 1px, transparent 1px);
-  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 40%, transparent 85%);
-  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 40%, transparent 85%);
+    linear-gradient(to right, hsl(0 0% 20% / 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(0 0% 20% / 0.3) 1px, transparent 1px);
+}
+
+.grid-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    hsl(0 0% 7%) 0%,
+    transparent 20%,
+    transparent 80%,
+    hsl(0 0% 7%) 100%
+  );
+  pointer-events: none;
 }
 
 /* Spotlight glow effect */
