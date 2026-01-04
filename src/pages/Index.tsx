@@ -27,7 +27,7 @@ import {
 const pricingPlans = [
   {
     name: "Free",
-    price: "$0",
+    price: "₹0",
     period: "forever",
     description: "Perfect for personal projects",
     features: [
@@ -41,7 +41,7 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    price: "$9",
+    price: "₹499",
     period: "per month",
     description: "For developers and small teams",
     features: [
@@ -415,17 +415,19 @@ export default function Index() {
                     </motion.li>
                   ))}
                 </ul>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full h-10 rounded-xl text-sm font-medium transition-colors ${
-                    plan.popular
-                      ? 'bg-foreground text-background hover:bg-foreground/90'
-                      : 'bg-background text-foreground border border-foreground'
-                  }`}
-                >
-                  {plan.cta}
-                </motion.button>
+                <Link to="/auth?mode=signup" className="w-full">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full h-10 rounded-xl text-sm font-medium transition-colors ${
+                      plan.popular
+                        ? 'bg-foreground text-background hover:bg-foreground/90'
+                        : 'bg-background text-foreground border border-foreground'
+                    }`}
+                  >
+                    {plan.cta}
+                  </motion.button>
+                </Link>
               </motion.div>
             );
             })}
