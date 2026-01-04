@@ -70,11 +70,11 @@ export default function Index() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-0 -mt-16">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Grid background with radial fade */}
         <div className="absolute inset-0 grid-background" />
         
-        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center -translate-y-12">
+        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center">
           <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
             Get your subdomain
             <br />
