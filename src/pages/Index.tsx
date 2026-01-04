@@ -271,10 +271,10 @@ export default function Index() {
           <div className="text-center mt-12">
             {!user && (
               <Link to="/auth?mode=signup">
-                <Button size="lg">
+                <button className="h-10 px-6 rounded-xl bg-foreground text-background border border-foreground text-sm font-medium flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors">
                   Start Now
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </Link>
             )}
           </div>
