@@ -53,7 +53,15 @@ export function Navbar() {
       style={{ width: scrolled ? "auto" : "100%", maxWidth: scrolled ? "900px" : "100%", minWidth: scrolled ? "auto" : "auto" }}
     >
       <div className={`flex items-center justify-between ${scrolled ? "gap-4 md:gap-16" : "gap-8"} ${scrolled ? "" : "container mx-auto"}`}>
-        <Link to="/">
+        <Link 
+          to="/" 
+          onClick={(e) => {
+            if (window.location.pathname === '/') {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+        >
           <Logo />
         </Link>
 
