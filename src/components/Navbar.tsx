@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
@@ -28,7 +28,11 @@ const navLinks = [
 export function Navbar() {
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+
+  // Hide nav links on dashboard and admin pages
+  const isAppPage = location.pathname === '/dashboard' || location.pathname === '/admin';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,10 +69,12 @@ export function Navbar() {
           <Logo />
         </Link>
 
-        {/* Centered nav links - hidden on mobile/tablet */}
-        <div className="hidden lg:flex">
-          <AnimatedTabs tabs={navLinks} />
-        </div>
+        {/* Centered nav links - hidden on mobile/tablet and on dashboard/admin pages */}
+        {!isAppPage && (
+          <div className="hidden lg:flex">
+            <AnimatedTabs tabs={navLinks} />
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           {user ? (
