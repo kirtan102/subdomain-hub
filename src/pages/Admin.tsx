@@ -136,7 +136,7 @@ export default function Admin() {
 
       if (updateError) throw updateError;
 
-      toast.success(`Approved ${request.subdomain}.yourdomain.com`);
+      toast.success(`Approved ${request.subdomain}.seeky.click`);
       fetchRequests();
     } catch (error: any) {
       toast.error(error.message || "Failed to approve request");
@@ -161,7 +161,7 @@ export default function Admin() {
 
       if (error) throw error;
 
-      toast.success(`Rejected ${selectedRequest.subdomain}.yourdomain.com`);
+      toast.success(`Rejected ${selectedRequest.subdomain}.seeky.click`);
       setRejectDialogOpen(false);
       setRejectReason("");
       setSelectedRequest(null);
@@ -366,7 +366,7 @@ export default function Admin() {
                       <TableCell>
                         <code className="font-mono text-sm">
                           <span className="text-foreground font-medium">{request.subdomain}</span>
-                          <span className="text-muted-foreground">.yourdomain.com</span>
+                          <span className="text-muted-foreground">.seeky.click</span>
                         </code>
                       </TableCell>
                       <TableCell>
@@ -456,7 +456,7 @@ export default function Admin() {
             <p className="text-sm text-muted-foreground">
               Are you sure you want to reject{" "}
               <code className="font-mono text-foreground font-medium">
-                {selectedRequest?.subdomain}.yourdomain.com
+                {selectedRequest?.subdomain}.seeky.click
               </code>?
             </p>
             <div className="space-y-2">

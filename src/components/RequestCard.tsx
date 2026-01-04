@@ -21,7 +21,7 @@ export function RequestCard({
   status,
   createdAt,
   reason,
-  domain = "yourdomain.com"
+  domain = "seeky.click"
 }: RequestCardProps) {
   return (
     <Card className="glass glass-hover overflow-hidden">
