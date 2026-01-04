@@ -7,7 +7,7 @@ import { RequestForm } from "@/components/RequestForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { useSubdomainRequests, useInvalidateSubdomainRequests } from "@/hooks/useSubdomainRequests";
 import { 
   Plus, 
   Search,
@@ -33,50 +33,20 @@ import {
 import { RecordTypeBadge } from "@/components/RecordTypeBadge";
 import { StatusBadge } from "@/components/StatusBadge";
 
-interface SubdomainRequest {
-  id: string;
-  subdomain: string;
-  record_type: 'A' | 'CNAME' | 'TXT' | 'SRV';
-  target_value: string;
-  status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-  ttl: number;
-  reason: string | null;
-}
-
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [requests, setRequests] = useState<SubdomainRequest[]>([]);
-  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  const { data: requests = [], isLoading: loading } = useSubdomainRequests();
+  const invalidateRequests = useInvalidateSubdomainRequests();
 
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth');
     }
   }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    if (user) {
-      fetchRequests();
-    }
-  }, [user]);
-
-  async function fetchRequests() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('subdomain_requests')
-      .select('*')
-      .eq('user_id', user?.id)
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setRequests(data as SubdomainRequest[]);
-    }
-    setLoading(false);
-  }
 
   const filteredRequests = requests.filter(request => {
     const searchLower = searchQuery.toLowerCase();
@@ -161,7 +131,7 @@ export default function Dashboard() {
                 </DialogHeader>
                 <RequestForm onSuccess={() => {
                   setDialogOpen(false);
-                  fetchRequests();
+                  invalidateRequests();
                 }} />
               </DialogContent>
             </Dialog>
