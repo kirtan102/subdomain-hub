@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { TextReveal } from "@/components/ui/text-reveal";
+import { TextShimmer } from "@/components/ui/text-shimmer";
 import {
   Globe, 
   Shield, 
@@ -76,6 +77,10 @@ export default function Index() {
         <div className="absolute inset-0 grid-background" />
         
         <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center">
+          <TextShimmer className="text-sm font-medium mb-4 block" duration={1.5} repeatDelay={0.5}>
+            Give your project a professional URL
+          </TextShimmer>
+
           <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
             Get your subdomain
             <br />
