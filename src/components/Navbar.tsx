@@ -37,15 +37,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const targetId = href.replace('#', '');
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
@@ -66,12 +57,11 @@ export function Navbar() {
         </Link>
 
         {/* Centered nav links - hidden on mobile/tablet */}
-        <div className={`hidden lg:flex items-center gap-10 transition-opacity duration-300 ${scrolled ? 'animate-fade-in' : ''}`}>
+        <div className="hidden lg:flex items-center gap-10">
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              onClick={(e) => handleSmoothScroll(e, link.href)}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
             >
               {link.label}
@@ -141,7 +131,6 @@ export function Navbar() {
                       <SheetClose asChild key={link.label}>
                         <a
                           href={link.href}
-                          onClick={(e) => handleSmoothScroll(e, link.href)}
                           className="text-lg text-foreground hover:text-muted-foreground transition-colors"
                         >
                           {link.label}
