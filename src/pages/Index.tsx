@@ -403,19 +403,30 @@ export default function Index() {
                     </motion.li>
                   ))}
                 </ul>
-                <Link to="/auth?mode=signup" className="w-full">
+                {plan.name === "Enterprise" ? (
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`w-full h-10 rounded-xl text-sm font-medium transition-colors ${
-                      plan.popular
-                        ? 'bg-foreground text-background hover:bg-foreground/90'
-                        : 'bg-background text-foreground border border-foreground'
-                    }`}
+                    onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="w-full h-10 rounded-xl text-sm font-medium transition-colors bg-background text-foreground border border-foreground"
                   >
                     {plan.cta}
                   </motion.button>
-                </Link>
+                ) : (
+                  <Link to="/auth?mode=signup" className="w-full">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full h-10 rounded-xl text-sm font-medium transition-colors ${
+                        plan.popular
+                          ? 'bg-foreground text-background hover:bg-foreground/90'
+                          : 'bg-background text-foreground border border-foreground'
+                      }`}
+                    >
+                      {plan.cta}
+                    </motion.button>
+                  </Link>
+                )}
               </motion.div>
             );
             })}
