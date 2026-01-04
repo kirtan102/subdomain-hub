@@ -13,6 +13,9 @@ import {
   Server,
   ArrowRight,
   Check,
+  Mail,
+  MapPin,
+  Clock,
 } from "lucide-react";
 
 const pricingPlans = [
@@ -334,6 +337,57 @@ export default function Index() {
                 </button>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section 
+        id="contact"
+        ref={(el) => { sectionsRef.current[4] = el; }}
+        className="py-24 border-t border-border scroll-reveal"
+      >
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Contact Us
+            </h2>
+            <p className="text-muted-foreground mb-12 leading-relaxed">
+              Have questions? We'd love to hear from you. Reach out and we'll respond as soon as possible.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
+            <div className="glass rounded-lg p-6 text-center">
+              <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-5 h-5 text-foreground" />
+              </div>
+              <h3 className="font-medium mb-1">Email</h3>
+              <p className="text-sm text-muted-foreground">support@subdomain.app</p>
+            </div>
+            <div className="glass rounded-lg p-6 text-center">
+              <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-5 h-5 text-foreground" />
+              </div>
+              <h3 className="font-medium mb-1">Location</h3>
+              <p className="text-sm text-muted-foreground">San Francisco, CA</p>
+            </div>
+            <div className="glass rounded-lg p-6 text-center">
+              <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-5 h-5 text-foreground" />
+              </div>
+              <h3 className="font-medium mb-1">Response Time</h3>
+              <p className="text-sm text-muted-foreground">Within 24 hours</p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link to="/contact">
+              <Button size="lg">
+                Send a Message
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
