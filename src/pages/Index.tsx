@@ -22,14 +22,7 @@ import {
   Mail,
   MapPin,
   Clock,
-  ChevronDown,
 } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 const pricingPlans = [
   {
@@ -48,7 +41,7 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    price: "₹59",
+    price: "₹99",
     period: "per year",
     description: "For developers and small teams",
     features: [
@@ -437,134 +430,6 @@ export default function Index() {
               </motion.div>
             );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section 
-        id="faq"
-        className="py-24 border-t border-border scroll-reveal"
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-muted-foreground">
-              <TextShimmer duration={1.5} repeatDelay={0.5}>Everything you need to know about our service.</TextShimmer>
-            </p>
-          </div>
-
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="space-y-4">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-              >
-                <AccordionItem value="item-1" className="glass rounded-lg px-6 border-none">
-                  <AccordionTrigger className="text-left font-medium hover:no-underline">
-                    How do I register a subdomain?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    Simply sign up for an account, go to your dashboard, and submit a subdomain request. 
-                    Choose your desired subdomain name, select the record type (A or CNAME), and provide 
-                    the target value. Once approved, your subdomain will be automatically configured.
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-              >
-                <AccordionItem value="item-2" className="glass rounded-lg px-6 border-none">
-                  <AccordionTrigger className="text-left font-medium hover:no-underline">
-                    How long does approval take?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    Approval times depend on your plan. Free plan users receive approval within 24 hours, 
-                    Pro users within 12 hours, and Enterprise users get instant approval. We review each 
-                    request to ensure compliance with our terms of service.
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
-                <AccordionItem value="item-3" className="glass rounded-lg px-6 border-none">
-                  <AccordionTrigger className="text-left font-medium hover:no-underline">
-                    Can I upgrade my plan later?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    Yes! You can upgrade your plan at any time from your account settings. When you upgrade, 
-                    you'll immediately get access to additional subdomains and faster approval times. 
-                    Your existing subdomains will remain active.
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-              >
-                <AccordionItem value="item-4" className="glass rounded-lg px-6 border-none">
-                  <AccordionTrigger className="text-left font-medium hover:no-underline">
-                    What record types are supported?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    Free plans support A and CNAME records. Pro and Enterprise plans support all record 
-                    types including A, CNAME, TXT, and SRV records. This allows you to configure your 
-                    subdomain for various use cases like websites, APIs, and services.
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.5 }}
-              >
-                <AccordionItem value="item-5" className="glass rounded-lg px-6 border-none">
-                  <AccordionTrigger className="text-left font-medium hover:no-underline">
-                    Can I change my subdomain's DNS settings?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    Currently, you can submit a new request to update your subdomain's target value or 
-                    record type. The change will go through the approval process. We're working on 
-                    self-service DNS management for Pro and Enterprise users.
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.6 }}
-              >
-                <AccordionItem value="item-6" className="glass rounded-lg px-6 border-none">
-                  <AccordionTrigger className="text-left font-medium hover:no-underline">
-                    Is there a refund policy?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    Yes, we offer a 7-day money-back guarantee on all paid plans. If you're not satisfied 
-                    with our service, contact us within 7 days of your purchase for a full refund.
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-            </Accordion>
           </div>
         </div>
       </section>
