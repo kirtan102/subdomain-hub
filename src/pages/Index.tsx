@@ -70,11 +70,11 @@ export default function Index() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-        {/* Grid background */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-0 -mt-16">
+        {/* Grid background with radial fade */}
         <div className="absolute inset-0 grid-background" />
         
-        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center">
+        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center -translate-y-12">
           <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
             Get your subdomain
             <br />
@@ -88,7 +88,7 @@ export default function Index() {
           <div className="animate-slide-up opacity-0 stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4">
             {user ? (
               <Link to="/dashboard">
-                <Button size="lg">
+                <Button size="lg" className="rounded-full h-12 px-8">
                   Go to Dashboard
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -96,14 +96,14 @@ export default function Index() {
             ) : (
               <>
                 <Link to="/auth?mode=signup">
-                  <Button size="lg">
-                    Get Started
+                  <Button size="lg" className="rounded-full h-12 px-8">
+                    Claim Subdomain
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/auth">
-                  <Button variant="outline" size="lg">
-                    Sign In
+                <Link to="#pricing">
+                  <Button variant="outline" size="lg" className="rounded-full h-12 px-8">
+                    View Pricing
                   </Button>
                 </Link>
               </>

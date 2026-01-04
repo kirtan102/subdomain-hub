@@ -87,7 +87,7 @@
   }
 }
 
-/* Grid background with fade */
+/* Grid background with radial fade */
 .grid-background {
   background-size: 60px 60px;
   background-image: 
@@ -99,11 +99,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    hsl(0 0% 0%) 0%,
-    transparent 20%,
-    transparent 80%,
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 50%,
+    transparent 0%,
+    transparent 40%,
+    hsl(0 0% 0% / 0.6) 70%,
     hsl(0 0% 0%) 100%
   );
   pointer-events: none;
