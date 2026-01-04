@@ -16,13 +16,13 @@ export function AnimatedTabs({ tabs, className }: AnimatedTabsProps) {
         <a
           key={tab.label}
           href={tab.href}
-          className="relative px-4 py-2 text-sm text-white transition-colors whitespace-nowrap"
+          className="relative px-4 py-2 text-sm text-foreground transition-colors whitespace-nowrap"
           onMouseEnter={() => setHoveredIndex(index)}
           onMouseLeave={() => setHoveredIndex(null)}
         >
           {hoveredIndex === index && (
             <motion.span
-              className="absolute inset-0 rounded-full bg-white/10"
+              className="absolute inset-0 rounded-full bg-foreground/10"
               layoutId="navHover"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
