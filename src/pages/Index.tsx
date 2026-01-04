@@ -216,7 +216,7 @@ export default function Index() {
               Everything You Need
             </h2>
             <p className="text-muted-foreground">
-              Simple. Fast. Secure.
+              <TextShimmer duration={1.5} repeatDelay={0.5}>Simple. Fast. Secure.</TextShimmer>
             </p>
           </div>
 
@@ -248,7 +248,7 @@ export default function Index() {
               How It Works
             </h2>
             <p className="text-muted-foreground">
-              Four simple steps.
+              <TextShimmer duration={1.5} repeatDelay={0.5}>Four simple steps.</TextShimmer>
             </p>
           </div>
 
@@ -291,7 +291,7 @@ export default function Index() {
               Simple Pricing
             </h2>
             <p className="text-muted-foreground">
-              Choose the plan that fits your needs.
+              <TextShimmer duration={1.5} repeatDelay={0.5}>Choose the plan that fits your needs.</TextShimmer>
             </p>
           </div>
 
@@ -353,7 +353,7 @@ export default function Index() {
               Contact Us
             </h2>
             <p className="text-muted-foreground">
-              Have questions? We'd love to hear from you.
+              <TextShimmer duration={1.5} repeatDelay={0.5}>Have questions? We'd love to hear from you.</TextShimmer>
             </p>
           </div>
 
