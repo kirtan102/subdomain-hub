@@ -30,7 +30,7 @@ interface RequestFormProps {
   domain?: string;
 }
 
-export function RequestForm({ onSuccess, domain = "yourdomain.com" }: RequestFormProps) {
+export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [subdomain, setSubdomain] = useState("");
