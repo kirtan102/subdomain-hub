@@ -413,6 +413,7 @@ export default function Index() {
                     required
                     maxLength={1000}
                     rows={5}
+                    className="resize-none min-h-[120px]"
                   />
                 </div>
 
