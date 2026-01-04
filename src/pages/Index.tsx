@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
+import { TextReveal } from "@/components/ui/text-reveal";
 import {
   Globe, 
   Shield, 
@@ -81,9 +82,11 @@ export default function Index() {
             in seconds.
           </h1>
 
-          <p className="animate-slide-up opacity-0 stagger-2 text-lg text-muted-foreground max-w-lg mx-auto mb-10">
-            Request custom subdomains for your projects. Fast, secure, and powered by Cloudflare.
-          </p>
+          <TextReveal 
+            text="Request custom subdomains for your projects. Fast, secure, and powered by Cloudflare."
+            staggerDelay={0.05}
+            className="text-lg text-muted-foreground max-w-lg mx-auto mb-10"
+          />
 
           <div className="animate-slide-up opacity-0 stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4">
             {user ? (
