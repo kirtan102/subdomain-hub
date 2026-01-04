@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -38,37 +38,36 @@ export default function Auth() {
       {/* Back button */}
       <div className="relative container mx-auto px-4 pt-6">
         <Link to="/">
-          <Button variant="ghost" size="sm">
+          <button className="flex items-center text-muted-foreground hover:text-foreground transition-colors text-sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
-          </Button>
+          </button>
         </Link>
       </div>
 
       {/* Auth form */}
       <div className="relative flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-6">
-              <Logo />
-            </div>
-            <h1 className="text-2xl font-bold mb-2">Welcome</h1>
-            <p className="text-muted-foreground">
-              Sign in to manage your subdomains
-            </p>
+        <div className="max-w-md w-full mx-auto rounded-2xl p-4 md:p-8 shadow-input bg-card border border-border">
+          <div className="flex justify-center mb-4">
+            <Logo />
           </div>
+          <h2 className="font-bold text-xl text-foreground text-center">
+            Welcome to is-a.tech
+          </h2>
+          <p className="text-muted-foreground text-sm max-w-sm mt-2 text-center mx-auto">
+            Sign in to manage your subdomains
+          </p>
 
-          <div className="glass rounded-xl p-6 shadow-card">
-            <Button
-              variant="outline"
-              className="w-full"
+          <div className="my-8">
+            <button
+              className="relative group/btn flex items-center justify-center px-4 w-full text-foreground rounded-md h-10 font-medium shadow-input bg-background border border-border hover:bg-muted transition-colors"
               onClick={handleGoogleSignIn}
               disabled={loading}
             >
               {loading ? (
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : (
-                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -87,15 +86,32 @@ export default function Auth() {
                   />
                 </svg>
               )}
-              Continue with Google
-            </Button>
-
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              By signing in, you agree to our Terms of Service and Privacy Policy
-            </p>
+              <span>Continue with Google</span>
+              <BottomGradient />
+            </button>
           </div>
+
+          <p className="text-center text-xs text-muted-foreground">
+            By signing in, you agree to our{" "}
+            <Link to="/terms" className="text-primary hover:underline">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link to="/privacy" className="text-primary hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
         </div>
       </div>
     </div>
   );
 }
+
+const BottomGradient = () => {
+  return (
+    <>
+      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-primary to-transparent" />
+      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+    </>
+  );
+};
