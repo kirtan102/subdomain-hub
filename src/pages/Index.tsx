@@ -318,18 +318,16 @@ export default function Index() {
           </div>
 
           <div className="flex justify-center mt-16">
-            {!user && (
-              <Link to="/auth?mode=signup">
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="h-12 px-8 rounded-full bg-foreground text-background border border-foreground text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors"
-                >
-                  Start Now
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              </Link>
-            )}
+            <Link to={user ? "/dashboard" : "/auth?mode=signup"}>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                className="h-12 px-8 rounded-full bg-foreground text-background border border-foreground text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors"
+              >
+                {user ? "Go to Dashboard" : "Start Now"}
+                <ArrowRight className="w-4 h-4" />
+              </motion.button>
+            </Link>
           </div>
         </div>
       </section>
