@@ -21,7 +21,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-border/50">
+    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/">
           <Logo />
@@ -49,8 +49,8 @@ export function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
-                    <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary-foreground" />
+                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                      <User className="w-4 h-4 text-foreground" />
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
@@ -75,7 +75,7 @@ export function Navbar() {
                 <Button variant="ghost">Sign in</Button>
               </Link>
               <Link to="/auth?mode=signup">
-                <Button variant="glow">Get Started</Button>
+                <Button>Get Started</Button>
               </Link>
             </>
           )}
