@@ -97,15 +97,15 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
       {/* Subdomain Input */}
       <div className="space-y-2">
         <Label htmlFor="subdomain">Subdomain</Label>
-        <div className="flex items-center gap-0">
+      <div className="flex items-stretch">
           <Input
             id="subdomain"
             placeholder="myserver"
             value={subdomain}
             onChange={(e) => setSubdomain(e.target.value.toLowerCase())}
-            className="rounded-r-none border-r-0"
+            className="rounded-r-none border-r-0 focus-visible:z-10"
           />
-          <div className="h-11 px-4 flex items-center bg-secondary border border-border border-l-0 rounded-r-lg">
+          <div className="px-4 flex items-center bg-muted border border-input border-l-0 rounded-r-md">
             <span className="text-muted-foreground font-mono text-sm">.{domain}</span>
           </div>
         </div>
