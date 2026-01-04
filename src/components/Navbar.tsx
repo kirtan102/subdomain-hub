@@ -73,12 +73,14 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <Link to="/dashboard" className="hidden sm:block">
-                <Button variant="ghost" size="sm" className="rounded-full">
-                  <LayoutDashboard className="w-4 h-4 mr-2" />
-                  Dashboard
-                </Button>
-              </Link>
+              {!isAdmin && (
+                <Link to="/dashboard" className="hidden sm:block">
+                  <Button variant="ghost" size="sm" className="rounded-full">
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </Button>
+                </Link>
+              )}
               
               {isAdmin && (
                 <Link to="/admin" className="hidden sm:block">
