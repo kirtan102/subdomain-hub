@@ -115,7 +115,7 @@ export function Navbar() {
             <>
               {/* CTA button - hidden on mobile/tablet */}
               <Link to="/auth?mode=signup" className="hidden lg:block">
-                <Button className="rounded-full">Claim Subdomain</Button>
+                <Button className="rounded-full">Get Started</Button>
               </Link>
 
               {/* Hamburger menu for mobile/tablet */}
@@ -139,7 +139,7 @@ export function Navbar() {
                     ))}
                     <SheetClose asChild>
                       <Link to="/auth?mode=signup">
-                        <Button className="rounded-full w-full mt-4">Claim Subdomain</Button>
+                        <Button className="rounded-full w-full mt-4">Get Started</Button>
                       </Link>
                     </SheetClose>
                   </div>
