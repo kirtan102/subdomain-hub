@@ -20,18 +20,13 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-foreground">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
                 <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
                   Dashboard
                 </Link>
               </li>
               <li>
-                <Link to="/auth" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Sign In
+                <Link to="/auth?mode=signup" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Sign Up
                 </Link>
               </li>
             </ul>
@@ -49,11 +44,6 @@ export function Footer() {
               <li>
                 <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
                   Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/cookies" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Cookie Policy
                 </Link>
               </li>
             </ul>
