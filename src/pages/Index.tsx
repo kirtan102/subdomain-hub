@@ -13,7 +13,6 @@ import {
   Server,
   ArrowRight,
 } from "lucide-react";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 const features = [
   {
@@ -111,12 +110,9 @@ export default function Index() {
                   </Button>
                 </Link>
                 <Link to="#pricing">
-                  <HoverBorderGradient
-                    containerClassName="rounded-full"
-                    className="flex items-center space-x-2"
-                  >
-                    <span>View Pricing</span>
-                  </HoverBorderGradient>
+                  <Button variant="outline" size="lg" className="rounded-full h-12 px-8">
+                    View Pricing
+                  </Button>
                 </Link>
               </>
             )}
