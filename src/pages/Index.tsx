@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import {
@@ -98,6 +102,35 @@ const steps = [
 
 export default function Index() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast({
+      title: "Message sent!",
+      description: "We'll get back to you as soon as possible.",
+    });
+    setFormData({ name: "", email: "", subject: "", message: "" });
+    setIsSubmitting(false);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
   const sectionsRef = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
@@ -348,46 +381,132 @@ export default function Index() {
         className="py-24 border-t border-border scroll-reveal"
       >
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Contact Us
             </h2>
-            <p className="text-muted-foreground mb-12 leading-relaxed">
-              Have questions? We'd love to hear from you. Reach out and we'll respond as soon as possible.
+            <p className="text-muted-foreground">
+              Have questions? We'd love to hear from you.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
-            <div className="glass rounded-lg p-6 text-center">
-              <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="font-medium mb-1">Email</h3>
-              <p className="text-sm text-muted-foreground">support@subdomain.app</p>
-            </div>
-            <div className="glass rounded-lg p-6 text-center">
-              <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="font-medium mb-1">Location</h3>
-              <p className="text-sm text-muted-foreground">San Francisco, CA</p>
-            </div>
-            <div className="glass rounded-lg p-6 text-center">
-              <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="font-medium mb-1">Response Time</h3>
-              <p className="text-sm text-muted-foreground">Within 24 hours</p>
-            </div>
-          </div>
+          <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+            {/* Contact Form */}
+            <div className="glass rounded-lg p-8">
+              <form onSubmit={handleContactSubmit} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      placeholder="Your name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      maxLength={100}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      maxLength={255}
+                    />
+                  </div>
+                </div>
 
-          <div className="text-center">
-            <Link to="/contact">
-              <Button size="lg">
-                Send a Message
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
+                <div className="space-y-2">
+                  <Label htmlFor="subject">Subject</Label>
+                  <Input
+                    id="subject"
+                    name="subject"
+                    placeholder="What's this about?"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    maxLength={200}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="message">Message</Label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    placeholder="Tell us more..."
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    maxLength={1000}
+                    rows={5}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full rounded-xl"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </Button>
+              </form>
+            </div>
+
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-2xl font-semibold mb-6">Get in Touch</h3>
+                <p className="text-muted-foreground mb-8">
+                  Whether you have a question about features, pricing, or
+                  anything else, our team is ready to answer all your questions.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-foreground" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-1">Email</h4>
+                    <p className="text-muted-foreground text-sm">
+                      support@subdomain.app
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-foreground" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-1">Location</h4>
+                    <p className="text-muted-foreground text-sm">
+                      San Francisco, CA
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-foreground" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-1">Response Time</h4>
+                    <p className="text-muted-foreground text-sm">
+                      Usually within 24 hours
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
