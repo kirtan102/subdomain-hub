@@ -77,9 +77,13 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
   }, []);
 
   useEffect(() => {
+    // Reset availability state immediately when user starts typing
+    setIsAvailable(null);
+    
+    // Debounce the API call by 500ms
     const timeoutId = setTimeout(() => {
       checkAvailability(subdomain);
-    }, 300);
+    }, 500);
 
     return () => clearTimeout(timeoutId);
   }, [subdomain, checkAvailability]);
