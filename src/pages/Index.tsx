@@ -70,41 +70,40 @@ export default function Index() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
         {/* Grid background */}
         <div className="absolute inset-0 grid-background" />
         
-        {/* Optical center offset - shifted up */}
-        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center -mt-16 md:-mt-24">
-          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-gradient-fade leading-[0.9]">
+        <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center">
+          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
             Get your subdomain
             <br />
             in seconds.
           </h1>
 
-          <p className="animate-slide-up opacity-0 stagger-2 text-base md:text-lg text-muted-foreground max-w-md mx-auto mb-10">
+          <p className="animate-slide-up opacity-0 stagger-2 text-lg text-muted-foreground max-w-lg mx-auto mb-10">
             Request custom subdomains for your projects. Fast, secure, and powered by Cloudflare.
           </p>
 
           <div className="animate-slide-up opacity-0 stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4">
             {user ? (
               <Link to="/dashboard">
-                <Button size="lg" className="font-bold">
+                <Button size="lg">
                   Go to Dashboard
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
             ) : (
               <>
-                <Link to="/dashboard">
-                  <Button size="lg" className="font-bold">
-                    Claim Subdomain
+                <Link to="/auth?mode=signup">
+                  <Button size="lg">
+                    Get Started
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/pricing">
+                <Link to="/auth">
                   <Button variant="outline" size="lg">
-                    View Pricing
+                    Sign In
                   </Button>
                 </Link>
               </>
@@ -116,7 +115,7 @@ export default function Index() {
       {/* Features */}
       <section 
         ref={(el) => { sectionsRef.current[0] = el; }}
-        className="py-24 scroll-reveal"
+        className="py-24 border-t border-border scroll-reveal"
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -148,7 +147,7 @@ export default function Index() {
       {/* How it works */}
       <section 
         ref={(el) => { sectionsRef.current[1] = el; }}
-        className="py-24 scroll-reveal"
+        className="py-24 border-t border-border scroll-reveal"
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
