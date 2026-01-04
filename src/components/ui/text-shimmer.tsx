@@ -17,7 +17,7 @@ export function TextShimmer({
   return (
     <motion.span
       className={cn(
-        "inline-block bg-clip-text text-transparent bg-gradient-to-r from-white via-white/60 to-white bg-[length:200%_100%]",
+        "inline-block bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/60 to-foreground bg-[length:200%_100%]",
         className
       )}
       animate={{
