@@ -196,11 +196,12 @@ export default function Index() {
                     Get Subdomain
                   </button>
                 </Link>
-                <Link to="#pricing">
-                  <button className="w-40 h-10 rounded-xl bg-background text-foreground border border-foreground text-sm font-medium transition-colors">
-                    View Pricing
-                  </button>
-                </Link>
+                <button 
+                  onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="w-40 h-10 rounded-xl bg-background text-foreground border border-foreground text-sm font-medium transition-colors"
+                >
+                  View Pricing
+                </button>
               </>
             )}
           </div>
