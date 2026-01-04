@@ -6,7 +6,6 @@ import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { TextShimmer } from "@/components/ui/text-shimmer";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import {
   Globe, 
   Shield, 
@@ -104,14 +103,11 @@ export default function Index() {
               </Link>
             ) : (
               <>
-              <Link to="/auth?mode=signup">
-                  <HoverBorderGradient
-                    containerClassName="rounded-full"
-                    className="flex items-center space-x-2 px-6 py-2"
-                  >
-                    <span>Get Subdomain</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </HoverBorderGradient>
+                <Link to="/auth?mode=signup">
+                  <Button size="lg" className="rounded-full h-12 px-8">
+                    Get Subdomain
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </Link>
                 <Link to="#pricing">
                   <Button variant="outline" size="lg" className="rounded-full h-12 px-8">
