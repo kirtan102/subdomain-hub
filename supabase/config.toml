@@ -1,1 +1,4 @@
 project_id = "rnalpgckwxhrgsltchui"
+
+[functions.create-dns-record]
+verify_jwt = false
