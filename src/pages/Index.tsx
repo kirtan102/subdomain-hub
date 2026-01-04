@@ -353,7 +353,7 @@ export default function Index() {
               Contact Us
             </h2>
             <p className="text-muted-foreground">
-              <TextShimmer duration={1.5} repeatDelay={0.5}>Have questions? We'd love to hear from you.</TextShimmer>
+              <TextShimmer duration={1.5} repeatDelay={0.5}>Have questions? We'd love to help you.</TextShimmer>
             </p>
           </div>
 
