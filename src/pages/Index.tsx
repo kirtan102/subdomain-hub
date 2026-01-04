@@ -13,6 +13,12 @@ import { useToast } from "@/hooks/use-toast";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Globe, 
   Shield, 
   Zap, 
@@ -449,7 +455,7 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto space-y-4">
+          <Accordion type="single" collapsible className="max-w-3xl mx-auto space-y-4">
             {[
               {
                 question: "How long does subdomain approval take?",
@@ -482,13 +488,18 @@ export default function Index() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="glass rounded-lg p-6"
               >
-                <h3 className="text-base font-semibold mb-2">{faq.question}</h3>
-                <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                <AccordionItem value={`item-${index}`} className="glass rounded-lg px-6 border-none">
+                  <AccordionTrigger className="text-base font-semibold hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
               </motion.div>
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
 
