@@ -4,19 +4,16 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RequestForm } from "@/components/RequestForm";
-import { RequestCard } from "@/components/RequestCard";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Plus, 
-  RefreshCw, 
+  Search,
   Inbox,
   Loader2,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  LayoutGrid,
+  Pencil,
 } from "lucide-react";
 import {
   Dialog,
@@ -26,11 +23,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { RecordTypeBadge } from "@/components/RecordTypeBadge";
+import { StatusBadge } from "@/components/StatusBadge";
 
 interface SubdomainRequest {
   id: string;
@@ -39,6 +40,7 @@ interface SubdomainRequest {
   target_value: string;
   status: 'pending' | 'approved' | 'rejected';
   created_at: string;
+  ttl: number;
   reason: string | null;
 }
 
@@ -48,6 +50,7 @@ export default function Dashboard() {
   const [requests, setRequests] = useState<SubdomainRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -75,44 +78,22 @@ export default function Dashboard() {
     setLoading(false);
   }
 
-  const pendingRequests = requests.filter(r => r.status === 'pending');
-  const approvedRequests = requests.filter(r => r.status === 'approved');
-  const rejectedRequests = requests.filter(r => r.status === 'rejected');
+  const filteredRequests = requests.filter(request => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      request.subdomain.toLowerCase().includes(searchLower) ||
+      request.target_value.toLowerCase().includes(searchLower) ||
+      request.record_type.toLowerCase().includes(searchLower)
+    );
+  });
 
-  const stats = [
-    { 
-      label: 'Total Requests', 
-      value: requests.length, 
-      icon: LayoutGrid,
-      gradient: 'from-blue-500/20 to-purple-500/20',
-      borderColor: 'border-blue-500/30',
-      iconColor: 'text-blue-400'
-    },
-    { 
-      label: 'Pending', 
-      value: pendingRequests.length, 
-      icon: Clock,
-      gradient: 'from-yellow-500/20 to-orange-500/20',
-      borderColor: 'border-yellow-500/30',
-      iconColor: 'text-yellow-400'
-    },
-    { 
-      label: 'Approved', 
-      value: approvedRequests.length, 
-      icon: CheckCircle2,
-      gradient: 'from-green-500/20 to-emerald-500/20',
-      borderColor: 'border-green-500/30',
-      iconColor: 'text-green-400'
-    },
-    { 
-      label: 'Rejected', 
-      value: rejectedRequests.length, 
-      icon: XCircle,
-      gradient: 'from-red-500/20 to-pink-500/20',
-      borderColor: 'border-red-500/30',
-      iconColor: 'text-red-400'
-    },
-  ];
+  const formatTTL = (ttl: number) => {
+    if (ttl === 1) return "Auto";
+    if (ttl < 60) return `${ttl}s`;
+    if (ttl < 3600) return `${Math.floor(ttl / 60)}m`;
+    if (ttl < 86400) return `${Math.floor(ttl / 3600)}h`;
+    return `${Math.floor(ttl / 86400)}d`;
+  };
 
   if (authLoading) {
     return (
@@ -132,42 +113,51 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-10"
+          className="mb-8"
         >
-          <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Dashboard
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              Welcome back! Manage your subdomain requests here.
-            </p>
-          </div>
+          <h1 className="text-3xl font-bold mb-2 text-foreground">
+            DNS Records
+          </h1>
+          <p className="text-muted-foreground">
+            Manage your subdomain records for seeky.click
+          </p>
+        </motion.div>
 
-          <div className="flex items-center gap-3">
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button 
-                variant="outline" 
-                onClick={fetchRequests} 
-                disabled={loading}
-                className="h-11 px-5 rounded-xl border-border/50 hover:border-foreground/30 transition-all"
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-            </motion.div>
-
+        {/* Search and Add Record Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-6"
+        >
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search DNS Records"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-11 bg-secondary/30 border-border/50 rounded-lg focus:border-primary/50"
+              />
+            </div>
+            <Button 
+              variant="outline"
+              onClick={() => setSearchQuery("")}
+              disabled={!searchQuery}
+              className="h-11 px-5 rounded-lg border-border/50 hover:border-foreground/30"
+            >
+              Search
+            </Button>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="h-11 px-5 rounded-xl bg-foreground text-background hover:bg-foreground/90">
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Request
-                  </Button>
-                </motion.div>
+                <Button className="h-11 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add record
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md border-border/50 bg-background/95 backdrop-blur-xl">
                 <DialogHeader>
-                  <DialogTitle className="text-xl">Request Subdomain</DialogTitle>
+                  <DialogTitle className="text-xl">Add DNS Record</DialogTitle>
                 </DialogHeader>
                 <RequestForm onSuccess={() => {
                   setDialogOpen(false);
@@ -178,138 +168,113 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className={`relative overflow-hidden rounded-2xl border ${stat.borderColor} bg-gradient-to-br ${stat.gradient} p-5 backdrop-blur-sm`}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
-                  <p className="text-3xl font-bold text-foreground">{stat.value}</p>
-                </div>
-                <div className={`p-2.5 rounded-xl bg-background/50 ${stat.iconColor}`}>
-                  <stat.icon className="w-5 h-5" />
-                </div>
-              </div>
-              
-              {/* Decorative gradient orb */}
-              <div className={`absolute -bottom-4 -right-4 w-20 h-20 rounded-full bg-gradient-to-br ${stat.gradient} blur-2xl opacity-50`} />
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Requests Section */}
+        {/* DNS Records Table */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="rounded-xl border border-border/50 overflow-hidden bg-secondary/10"
         >
-          <Tabs defaultValue="all" className="space-y-6">
-            <TabsList className="bg-secondary/50 border border-border/30 p-1 rounded-xl">
-              <TabsTrigger 
-                value="all" 
-                className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background transition-all"
-              >
-                All ({requests.length})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="pending"
-                className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background transition-all"
-              >
-                Pending ({pendingRequests.length})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="approved"
-                className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background transition-all"
-              >
-                Approved ({approvedRequests.length})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="rejected"
-                className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background transition-all"
-              >
-                Rejected ({rejectedRequests.length})
-              </TabsTrigger>
-            </TabsList>
-
-            {['all', 'pending', 'approved', 'rejected'].map((tab) => {
-              const filteredRequests = tab === 'all' 
-                ? requests 
-                : requests.filter(r => r.status === tab);
-
-              return (
-                <TabsContent key={tab} value={tab} className="space-y-4">
-                  {loading ? (
-                    <div className="flex items-center justify-center py-20">
-                      <div className="flex flex-col items-center gap-4">
-                        <Loader2 className="w-8 h-8 animate-spin text-foreground/50" />
-                        <p className="text-muted-foreground">Loading requests...</p>
-                      </div>
-                    </div>
-                  ) : filteredRequests.length === 0 ? (
-                    <motion.div 
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="text-center py-20 rounded-2xl border border-dashed border-border/50 bg-secondary/20"
-                    >
-                      <div className="w-16 h-16 rounded-full bg-secondary/50 flex items-center justify-center mx-auto mb-5">
-                        <Inbox className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        {tab === 'all' 
-                          ? "No requests yet" 
-                          : `No ${tab} requests`}
-                      </h3>
-                      <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-                        {tab === 'all' 
-                          ? "Get started by creating your first subdomain request." 
-                          : `You don't have any ${tab} requests at the moment.`}
-                      </p>
-                      {tab === 'all' && (
-                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                          <Button 
-                            onClick={() => setDialogOpen(true)}
-                            className="h-11 px-6 rounded-xl bg-foreground text-background hover:bg-foreground/90"
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Create Your First Request
-                          </Button>
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  ) : (
-                    <div className="grid gap-4">
-                      {filteredRequests.map((request, index) => (
-                        <motion.div
-                          key={request.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.05 }}
-                        >
-                          <RequestCard
-                            subdomain={request.subdomain}
-                            recordType={request.record_type}
-                            targetValue={request.target_value}
-                            status={request.status}
-                            createdAt={request.created_at}
-                            reason={request.reason || undefined}
-                          />
-                        </motion.div>
-                      ))}
-                    </div>
-                  )}
-                </TabsContent>
-              );
-            })}
-          </Tabs>
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="flex flex-col items-center gap-4">
+                <Loader2 className="w-8 h-8 animate-spin text-foreground/50" />
+                <p className="text-muted-foreground">Loading records...</p>
+              </div>
+            </div>
+          ) : filteredRequests.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 rounded-full bg-secondary/50 flex items-center justify-center mx-auto mb-5">
+                <Inbox className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">
+                {searchQuery ? "No matching records" : "No DNS records yet"}
+              </h3>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+                {searchQuery 
+                  ? "Try a different search term." 
+                  : "Get started by adding your first DNS record."}
+              </p>
+              {!searchQuery && (
+                <Button 
+                  onClick={() => setDialogOpen(true)}
+                  className="h-11 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add your first record
+                </Button>
+              )}
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border/50 hover:bg-transparent">
+                  <TableHead className="text-muted-foreground font-medium">Type</TableHead>
+                  <TableHead className="text-muted-foreground font-medium">Name</TableHead>
+                  <TableHead className="text-muted-foreground font-medium">Content</TableHead>
+                  <TableHead className="text-muted-foreground font-medium">Status</TableHead>
+                  <TableHead className="text-muted-foreground font-medium">TTL</TableHead>
+                  <TableHead className="text-muted-foreground font-medium text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredRequests.map((request, index) => (
+                  <motion.tr
+                    key={request.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.03 }}
+                    className="border-border/50 hover:bg-secondary/30 transition-colors"
+                  >
+                    <TableCell>
+                      <RecordTypeBadge type={request.record_type} />
+                    </TableCell>
+                    <TableCell>
+                      <code className="font-mono text-sm text-foreground">
+                        {request.subdomain}
+                      </code>
+                    </TableCell>
+                    <TableCell>
+                      <code className="font-mono text-sm text-muted-foreground">
+                        {request.target_value}
+                      </code>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={request.status} />
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-muted-foreground">
+                        {formatTTL(request.ttl)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-primary hover:text-primary/80 hover:bg-transparent p-0 h-auto font-medium"
+                      >
+                        <Pencil className="w-3.5 h-3.5 mr-1.5" />
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </motion.tr>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </motion.div>
+
+        {/* Records count */}
+        {!loading && filteredRequests.length > 0 && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-sm text-muted-foreground mt-4"
+          >
+            Showing {filteredRequests.length} of {requests.length} records
+          </motion.p>
+        )}
       </main>
 
       <Footer />
