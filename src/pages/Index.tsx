@@ -48,7 +48,7 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    price: "₹99",
+    price: "₹59",
     period: "per year",
     description: "For developers and small teams",
     features: [
