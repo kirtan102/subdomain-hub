@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,9 +12,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const navLinks = [
+  { label: "Pricing", href: "#pricing" },
+  { label: "About", href: "#about" },
+  { label: "Contact Us", href: "#contact" },
+];
+
 export function Navbar() {
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -21,17 +37,37 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+    <nav
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out ${
+        scrolled
+          ? "bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg rounded-full px-6 py-2"
+          : "bg-transparent px-4 py-2"
+      }`}
+      style={{ width: scrolled ? "auto" : "100%", maxWidth: scrolled ? "fit-content" : "100%" }}
+    >
+      <div className={`flex items-center justify-between gap-8 ${scrolled ? "" : "container mx-auto"}`}>
         <Link to="/">
           <Logo />
         </Link>
 
-        <div className="flex items-center gap-4">
+        {/* Centered nav links */}
+        <div className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3">
           {user ? (
             <>
               <Link to="/dashboard">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="rounded-full">
                   <LayoutDashboard className="w-4 h-4 mr-2" />
                   Dashboard
                 </Button>
@@ -39,7 +75,7 @@ export function Navbar() {
               
               {isAdmin && (
                 <Link to="/admin">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="rounded-full">
                     <Shield className="w-4 h-4 mr-2" />
                     Admin
                   </Button>
@@ -71,11 +107,8 @@ export function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/auth">
-                <Button variant="ghost">Sign in</Button>
-              </Link>
               <Link to="/auth?mode=signup">
-                <Button>Get Started</Button>
+                <Button className="rounded-full">Claim Subdomain</Button>
               </Link>
             </>
           )}
