@@ -61,18 +61,10 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-12 pt-6 border-t border-border flex justify-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} SubdomainHub. All rights reserved.
+            © {new Date().getFullYear()} SubdomainHub. All rights reserved
           </p>
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <a href="mailto:support@example.com" className="hover:text-foreground transition-colors">
-              Contact
-            </a>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Status
-            </a>
-          </div>
         </div>
       </div>
     </footer>
