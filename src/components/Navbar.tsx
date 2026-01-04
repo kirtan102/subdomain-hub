@@ -20,9 +20,9 @@ import {
 import { AnimatedTabs } from "@/components/ui/animated-tabs";
 
 const navLinks = [
-  { label: "Pricing", href: "#pricing" },
-  { label: "About", href: "#about" },
-  { label: "Contact Us", href: "#contact" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "About", href: "/#about" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 export function Navbar() {
