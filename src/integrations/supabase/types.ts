@@ -154,6 +154,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_subdomain_available: {
+        Args: { subdomain_to_check: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user"
