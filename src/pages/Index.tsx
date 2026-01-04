@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
-import { 
+import {
   Globe, 
   Shield, 
   Zap, 
@@ -191,12 +192,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-border">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2025 SubDomain. Powered by Cloudflare DNS.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
