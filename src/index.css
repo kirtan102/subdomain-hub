@@ -91,10 +91,10 @@
 .grid-background {
   background-size: 60px 60px;
   background-image: 
-    linear-gradient(to right, hsl(0 0% 100% / 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(0 0% 100% / 0.04) 1px, transparent 1px);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
+    linear-gradient(to right, hsl(0 0% 100% / 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(0 0% 100% / 0.08) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 40%, transparent 85%);
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 40%, transparent 85%);
 }
 
 /* Spotlight glow effect */
