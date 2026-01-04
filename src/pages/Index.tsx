@@ -216,7 +216,7 @@ export default function Index() {
               Everything You Need
             </h2>
             <p className="text-muted-foreground">
-              Simple subdomain management.
+              Simple. Fast. Secure.
             </p>
           </div>
 
