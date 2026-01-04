@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Loader2, Globe } from "lucide-react";
+import { Loader2, Globe, Check, X } from "lucide-react";
 import { z } from "zod";
 
 const subdomainSchema = z.object({
@@ -37,6 +37,8 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
   const [recordType, setRecordType] = useState<'A' | 'CNAME' | 'TXT' | 'SRV'>('A');
   const [targetValue, setTargetValue] = useState("");
   const [ttl, setTtl] = useState(3600);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 
   const placeholders = {
     A: "192.168.1.1",
@@ -44,6 +46,46 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
     TXT: "v=spf1 include:example.com ~all",
     SRV: "0 5 5269 xmpp.example.com",
   };
+
+  // Debounced subdomain availability check
+  const checkAvailability = useCallback(async (value: string) => {
+    if (!value || value.length < 1) {
+      setIsAvailable(null);
+      return;
+    }
+
+    // Validate format first
+    const formatValid = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(value);
+    if (!formatValid) {
+      setIsAvailable(null);
+      return;
+    }
+
+    setCheckingAvailability(true);
+    try {
+      const { data, error } = await supabase
+        .from('subdomain_requests')
+        .select('id')
+        .eq('subdomain', value)
+        .maybeSingle();
+
+      if (error) throw error;
+      setIsAvailable(data === null);
+    } catch (error) {
+      console.error('Error checking availability:', error);
+      setIsAvailable(null);
+    } finally {
+      setCheckingAvailability(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      checkAvailability(subdomain);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [subdomain, checkAvailability]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +104,11 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
 
     if (!validation.success) {
       toast.error(validation.error.errors[0].message);
+      return;
+    }
+
+    if (isAvailable === false) {
+      toast.error("This subdomain is already taken");
       return;
     }
 
@@ -97,21 +144,42 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
       {/* Subdomain Input */}
       <div className="space-y-2">
         <Label htmlFor="subdomain">Subdomain</Label>
-      <div className="flex items-stretch">
-          <Input
-            id="subdomain"
-            placeholder="myserver"
-            value={subdomain}
-            onChange={(e) => setSubdomain(e.target.value.toLowerCase())}
-            className="rounded-r-none border-r-0 focus-visible:z-10"
-          />
+        <div className="flex items-stretch">
+          <div className="relative flex-1">
+            <Input
+              id="subdomain"
+              placeholder="myserver"
+              value={subdomain}
+              onChange={(e) => setSubdomain(e.target.value.toLowerCase())}
+              className="rounded-r-none border-r-0 focus-visible:z-10 pr-10"
+            />
+            {subdomain && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                {checkingAvailability ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                ) : isAvailable === true ? (
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : isAvailable === false ? (
+                  <X className="w-4 h-4 text-red-500" />
+                ) : null}
+              </div>
+            )}
+          </div>
           <div className="px-4 flex items-center bg-muted border border-input border-l-0 rounded-r-md">
             <span className="text-muted-foreground font-mono text-sm">.{domain}</span>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Lowercase letters, numbers, and hyphens only
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-muted-foreground">
+            Lowercase letters, numbers, and hyphens only
+          </p>
+          {subdomain && isAvailable === false && (
+            <p className="text-xs text-red-500">This subdomain is already taken</p>
+          )}
+          {subdomain && isAvailable === true && (
+            <p className="text-xs text-green-500">Available!</p>
+          )}
+        </div>
       </div>
 
       {/* Record Type */}
