@@ -64,13 +64,10 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
     setCheckingAvailability(true);
     try {
       const { data, error } = await supabase
-        .from('subdomain_requests')
-        .select('id')
-        .eq('subdomain', value)
-        .maybeSingle();
+        .rpc('is_subdomain_available', { subdomain_to_check: value });
 
       if (error) throw error;
-      setIsAvailable(data === null);
+      setIsAvailable(data === true);
     } catch (error) {
       console.error('Error checking availability:', error);
       setIsAvailable(null);
