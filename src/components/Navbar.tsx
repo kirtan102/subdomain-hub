@@ -44,12 +44,17 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out ${
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
         scrolled
-          ? "bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg rounded-full px-4 md:px-8 py-3"
-          : "bg-transparent px-4 py-2"
+          ? "bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg rounded-full px-4 md:px-8 py-3 scale-100 opacity-100"
+          : "bg-transparent px-4 py-2 border-transparent"
       }`}
-      style={{ width: scrolled ? "auto" : "100%", maxWidth: scrolled ? "900px" : "100%", minWidth: scrolled ? "auto" : "auto" }}
+      style={{ 
+        width: scrolled ? "auto" : "100%", 
+        maxWidth: scrolled ? "900px" : "100%", 
+        minWidth: scrolled ? "auto" : "auto",
+        transitionProperty: "all, background-color, backdrop-filter, border-color, box-shadow, padding, border-radius"
+      }}
     >
       <div className={`flex items-center justify-between ${scrolled ? "gap-4 md:gap-16" : "gap-8"} ${scrolled ? "" : "container mx-auto"}`}>
         <Link to="/">
