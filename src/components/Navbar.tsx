@@ -40,18 +40,18 @@ export function Navbar() {
     <nav
       className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out ${
         scrolled
-          ? "bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg rounded-full px-6 py-2"
+          ? "bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg rounded-full px-8 py-3"
           : "bg-transparent px-4 py-2"
       }`}
-      style={{ width: scrolled ? "auto" : "100%", maxWidth: scrolled ? "fit-content" : "100%" }}
+      style={{ width: scrolled ? "auto" : "100%", maxWidth: scrolled ? "900px" : "100%", minWidth: scrolled ? "700px" : "auto" }}
     >
-      <div className={`flex items-center justify-between gap-8 ${scrolled ? "" : "container mx-auto"}`}>
+      <div className={`flex items-center justify-between ${scrolled ? "gap-16" : "gap-8"} ${scrolled ? "" : "container mx-auto"}`}>
         <Link to="/">
           <Logo />
         </Link>
 
         {/* Centered nav links */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
             <a
               key={link.label}
