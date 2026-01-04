@@ -23,6 +23,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useAllSubdomainRequests, useInvalidateSubdomainRequests } from "@/hooks/useSubdomainRequests";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { 
@@ -36,35 +37,20 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  Users,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-
-interface SubdomainRequest {
-  id: string;
-  subdomain: string;
-  record_type: 'A' | 'CNAME' | 'TXT' | 'SRV';
-  target_value: string;
-  ttl: number;
-  status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-  reason: string | null;
-  user_id: string;
-  profiles?: {
-    email: string;
-    full_name: string | null;
-  };
-}
+import type { SubdomainRequest } from "@/hooks/useSubdomainRequests";
 
 export default function Admin() {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [requests, setRequests] = useState<SubdomainRequest[]>([]);
-  const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<SubdomainRequest | null>(null);
   const [rejectReason, setRejectReason] = useState("");
+
+  const { data: requests = [], isLoading: loading, refetch } = useAllSubdomainRequests();
+  const invalidateRequests = useInvalidateSubdomainRequests();
 
   useEffect(() => {
     if (!authLoading) {
@@ -76,38 +62,6 @@ export default function Admin() {
       }
     }
   }, [user, isAdmin, authLoading, navigate]);
-
-  useEffect(() => {
-    if (isAdmin) {
-      fetchRequests();
-    }
-  }, [isAdmin]);
-
-  async function fetchRequests() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('subdomain_requests')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      const userIds = [...new Set(data.map(r => r.user_id))];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, email, full_name')
-        .in('id', userIds);
-
-      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
-      
-      const requestsWithProfiles = data.map(r => ({
-        ...r,
-        profiles: profileMap.get(r.user_id) || undefined,
-      }));
-      
-      setRequests(requestsWithProfiles as SubdomainRequest[]);
-    }
-    setLoading(false);
-  }
 
   async function handleApprove(request: SubdomainRequest) {
     setActionLoading(request.id);
@@ -137,7 +91,7 @@ export default function Admin() {
       if (updateError) throw updateError;
 
       toast.success(`Approved ${request.subdomain}.seeky.click`);
-      fetchRequests();
+      invalidateRequests();
     } catch (error: any) {
       toast.error(error.message || "Failed to approve request");
     } finally {
@@ -165,7 +119,7 @@ export default function Admin() {
       setRejectDialogOpen(false);
       setRejectReason("");
       setSelectedRequest(null);
-      fetchRequests();
+      invalidateRequests();
     } catch (error: any) {
       toast.error(error.message || "Failed to reject request");
     } finally {
@@ -255,7 +209,7 @@ export default function Admin() {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button 
               variant="outline" 
-              onClick={fetchRequests} 
+              onClick={() => refetch()} 
               disabled={loading}
               className="h-11 px-5 rounded-xl border-border/50 hover:border-foreground/30 transition-all"
             >
