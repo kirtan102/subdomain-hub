@@ -77,8 +77,10 @@ export default function Index() {
         <div className="spotlight" />
         
         <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center -mt-16 md:-mt-24">
-          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-outfit font-extrabold mb-6 tracking-tight text-gradient-fade">
-            Get Subdomain In Seconds
+          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-manrope font-semibold mb-6 tracking-tight text-gradient-fade">
+            Get Subdomain
+            <br />
+            In Seconds
           </h1>
 
           <p className="animate-slide-up opacity-0 stagger-2 text-lg text-muted-foreground max-w-lg mx-auto mb-10">
