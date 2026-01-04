@@ -11,8 +11,6 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
-import Cookies from "./pages/Cookies";
-
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
@@ -31,10 +29,8 @@ function AppRoutes() {
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy" element={<Privacy />} />
-        <Route path="/cookies" element={<Cookies />} />
-        
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotFound />} />
     </Routes>
