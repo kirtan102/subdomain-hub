@@ -41,7 +41,7 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    price: "₹99",
+    price: "₹59",
     period: "per year",
     description: "For developers and small teams",
     features: [
@@ -434,10 +434,68 @@ export default function Index() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section 
+        ref={(el) => { sectionsRef.current[3] = el; }}
+        className="py-24 border-t border-border scroll-reveal"
+      >
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-muted-foreground">
+              <TextShimmer duration={1.5} repeatDelay={0.5}>Everything you need to know.</TextShimmer>
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-4">
+            {[
+              {
+                question: "How long does subdomain approval take?",
+                answer: "Approval times depend on your plan. Free users get 24-hour approval, Pro users get 12-hour priority approval, and Enterprise users enjoy instant approval."
+              },
+              {
+                question: "What subdomain formats are supported?",
+                answer: "Subdomains must be at least 3 characters long and can contain lowercase letters, numbers, and hyphens. They cannot start or end with a hyphen."
+              },
+              {
+                question: "Can I upgrade my plan later?",
+                answer: "Yes! You can upgrade from Free to Pro or Enterprise at any time. Your existing subdomains will be retained, and you'll immediately get access to additional features."
+              },
+              {
+                question: "What DNS record types are available?",
+                answer: "Free plans support A and CNAME records. Pro and Enterprise plans unlock all record types including TXT and SRV records for advanced configurations."
+              },
+              {
+                question: "How do I point my subdomain to my website?",
+                answer: "After approval, your DNS records are automatically configured. For A records, point to your server's IP address. For CNAME records, point to your hosting provider's domain."
+              },
+              {
+                question: "Is there a limit on subdomains?",
+                answer: "Free users get 1 subdomain, Pro users get 5 subdomains, and Enterprise users enjoy unlimited subdomains for their organization."
+              }
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="glass rounded-lg p-6"
+              >
+                <h3 className="text-base font-semibold mb-2">{faq.question}</h3>
+                <p className="text-sm text-muted-foreground">{faq.answer}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Contact */}
       <section 
         id="contact"
-        ref={(el) => { sectionsRef.current[3] = el; }}
+        ref={(el) => { sectionsRef.current[4] = el; }}
         className="py-24 border-t border-border scroll-reveal"
       >
         <div className="container mx-auto px-4">
