@@ -224,33 +224,17 @@ export default function Index() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <motion.div
+            {features.map((feature) => (
+              <div
                 key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: index * 0.1,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                whileHover={{ 
-                  y: -6,
-                  transition: { duration: 0.25, ease: "easeOut" }
-                }}
                 className="glass glass-hover rounded-lg p-6"
               >
-                <motion.div 
-                  className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mb-4"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
+                <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center mb-4">
                   <feature.icon className="w-5 h-5 text-foreground" />
-                </motion.div>
+                </div>
                 <h3 className="text-base font-semibold mb-2">{feature.title}</h3>
                 <p className="text-sm text-muted-foreground">{feature.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
