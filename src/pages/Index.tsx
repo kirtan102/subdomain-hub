@@ -96,23 +96,22 @@ export default function Index() {
           <div className="animate-slide-up opacity-0 stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4">
             {user ? (
               <Link to="/dashboard">
-                <Button size="lg" className="rounded-full h-12 px-8">
+                <button className="w-40 h-10 rounded-xl bg-foreground text-background border border-foreground text-sm font-medium flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors">
                   Go to Dashboard
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </Link>
             ) : (
               <>
                 <Link to="/auth?mode=signup">
-                  <Button size="lg" className="rounded-full h-12 px-8">
+                  <button className="w-40 h-10 rounded-xl bg-foreground text-background border border-foreground text-sm font-medium flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors">
                     Get Subdomain
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+                  </button>
                 </Link>
                 <Link to="#pricing">
-                  <Button variant="outline" size="lg" className="rounded-full h-12 px-8">
+                  <button className="w-40 h-10 rounded-xl bg-background text-foreground border border-foreground text-sm font-medium hover:bg-secondary transition-colors">
                     View Pricing
-                  </Button>
+                  </button>
                 </Link>
               </>
             )}
