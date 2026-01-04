@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -296,19 +297,37 @@ export default function Index() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {pricingPlans.map((plan) => (
-              <div
+            {pricingPlans.map((plan, index) => (
+              <motion.div
                 key={plan.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.15,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                whileHover={{ 
+                  y: -8,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
                 className={`glass glass-hover rounded-lg p-6 relative ${
                   plan.popular ? 'ring-2 ring-foreground' : ''
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <motion.div 
+                    className="absolute -top-3 left-1/2 -translate-x-1/2"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4, duration: 0.3 }}
+                  >
                     <span className="bg-foreground text-background text-xs font-medium px-3 py-1 rounded-full">
                       Most Popular
                     </span>
-                  </div>
+                  </motion.div>
                 )}
                 <div className="text-center mb-6">
                   <h3 className="text-lg font-semibold mb-2">{plan.name}</h3>
@@ -319,14 +338,26 @@ export default function Index() {
                   <p className="text-sm text-muted-foreground">{plan.description}</p>
                 </div>
                 <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm">
+                  {plan.features.map((feature, featureIndex) => (
+                    <motion.li 
+                      key={feature} 
+                      className="flex items-center gap-2 text-sm"
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ 
+                        delay: index * 0.15 + featureIndex * 0.05 + 0.2,
+                        duration: 0.3
+                      }}
+                    >
                       <Check className="w-4 h-4 text-foreground flex-shrink-0" />
                       <span>{feature}</span>
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   className={`w-full h-10 rounded-xl text-sm font-medium transition-colors ${
                     plan.popular
                       ? 'bg-foreground text-background hover:bg-foreground/90'
@@ -334,8 +365,8 @@ export default function Index() {
                   }`}
                 >
                   {plan.cta}
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             ))}
           </div>
         </div>
