@@ -6,6 +6,56 @@
 
 @layer base {
   :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 20%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 7%;
+
+    --border: 0 0% 85%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 96%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 0 0% 9%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 92%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 85%;
+    --sidebar-ring: 0 0% 9%;
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, sans-serif;
+  }
+
+  .dark {
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
 
@@ -40,8 +90,6 @@
     --input: 0 0% 15%;
     --ring: 0 0% 98%;
 
-    --radius: 0.5rem;
-
     --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 0 0% 90%;
     --sidebar-primary: 0 0% 98%;
@@ -50,14 +98,6 @@
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-border: 0 0% 15%;
     --sidebar-ring: 0 0% 98%;
-
-    /* Typography */
-    --font-sans: 'Inter', system-ui, sans-serif;
-  }
-
-  .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
   }
 }
 
@@ -82,7 +122,11 @@
   }
 
   .text-gradient-fade {
-    @apply bg-clip-text text-transparent;
+  @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(180deg, hsl(0 0% 9%) 0%, hsl(0 0% 50%) 100%);
+  }
+
+  .dark .text-gradient-fade {
     background-image: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 50%) 100%);
   }
 }
@@ -90,6 +134,12 @@
 /* Grid background with radial fade */
 .grid-background {
   background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, hsl(0 0% 80% / 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(0 0% 80% / 0.4) 1px, transparent 1px);
+}
+
+.dark .grid-background {
   background-image: 
     linear-gradient(to right, hsl(0 0% 22% / 0.4) 1px, transparent 1px),
     linear-gradient(to bottom, hsl(0 0% 22% / 0.4) 1px, transparent 1px);
@@ -103,10 +153,20 @@
     ellipse 80% 60% at 50% 50%,
     transparent 0%,
     transparent 40%,
+    hsl(0 0% 98% / 0.6) 70%,
+    hsl(0 0% 98%) 100%
+  );
+  pointer-events: none;
+}
+
+.dark .grid-background::before {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 50%,
+    transparent 0%,
+    transparent 40%,
     hsl(0 0% 0% / 0.6) 70%,
     hsl(0 0% 0%) 100%
   );
-  pointer-events: none;
 }
 
 /* Spotlight glow effect */
@@ -116,8 +176,8 @@
   height: 400px;
   background: radial-gradient(
     ellipse at center,
-    hsl(0 0% 100% / 0.08) 0%,
-    hsl(0 0% 100% / 0.03) 30%,
+    hsl(0 0% 0% / 0.05) 0%,
+    hsl(0 0% 0% / 0.02) 30%,
     transparent 70%
   );
   top: 50%;
@@ -125,6 +185,15 @@
   transform: translate(-50%, -60%);
   pointer-events: none;
   filter: blur(40px);
+}
+
+.dark .spotlight {
+  background: radial-gradient(
+    ellipse at center,
+    hsl(0 0% 100% / 0.08) 0%,
+    hsl(0 0% 100% / 0.03) 30%,
+    transparent 70%
+  );
 }
 
 /* Smooth scrolling */
