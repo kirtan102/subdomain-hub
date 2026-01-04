@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Globe, 
@@ -51,8 +50,8 @@ export default function Index() {
 
       {/* Hero Section */}
       <section className="relative py-32 overflow-hidden">
-        {/* Interactive ripple background */}
-        <BackgroundRippleEffect rows={8} cols={20} cellSize={60} />
+        {/* Grid background */}
+        <div className="absolute inset-0 grid-background" />
         
         <div className="container relative mx-auto px-4 text-center">
           <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
