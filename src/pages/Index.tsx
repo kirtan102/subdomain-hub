@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -358,10 +359,10 @@ export default function Index() {
 
           <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {/* Contact Form */}
-            <div className="glass rounded-lg p-8">
+            <div className="rounded-2xl p-4 md:p-8 shadow-input bg-card border border-border">
               <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <LabelInputContainer>
                     <Label htmlFor="name">Name</Label>
                     <Input
                       id="name"
@@ -372,8 +373,8 @@ export default function Index() {
                       required
                       maxLength={100}
                     />
-                  </div>
-                  <div className="space-y-2">
+                  </LabelInputContainer>
+                  <LabelInputContainer>
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
@@ -385,10 +386,10 @@ export default function Index() {
                       required
                       maxLength={255}
                     />
-                  </div>
+                  </LabelInputContainer>
                 </div>
 
-                <div className="space-y-2">
+                <LabelInputContainer>
                   <Label htmlFor="subject">Subject</Label>
                   <Input
                     id="subject"
@@ -399,9 +400,9 @@ export default function Index() {
                     required
                     maxLength={200}
                   />
-                </div>
+                </LabelInputContainer>
 
-                <div className="space-y-2">
+                <LabelInputContainer>
                   <Label htmlFor="message">Message</Label>
                   <Textarea
                     id="message"
@@ -413,15 +414,16 @@ export default function Index() {
                     maxLength={1000}
                     rows={5}
                   />
-                </div>
+                </LabelInputContainer>
 
-                <Button
+                <button
                   type="submit"
-                  className="w-full rounded-xl"
                   disabled={isSubmitting}
+                  className="relative group/btn w-full bg-foreground text-background rounded-xl h-10 font-medium shadow-input hover:bg-foreground/90 transition-colors disabled:opacity-50"
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
-                </Button>
+                  {isSubmitting ? "Sending..." : "Send Message →"}
+                  <BottomGradient />
+                </button>
               </form>
             </div>
 
@@ -481,3 +483,26 @@ export default function Index() {
     </div>
   );
 }
+
+const BottomGradient = () => {
+  return (
+    <>
+      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-primary to-transparent" />
+      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+    </>
+  );
+};
+
+const LabelInputContainer = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className={cn("flex flex-col space-y-2 w-full", className)}>
+      {children}
+    </div>
+  );
+};
