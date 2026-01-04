@@ -97,7 +97,7 @@ export default function Index() {
               <>
                 <Link to="/auth?mode=signup">
                   <Button size="lg" className="rounded-full h-12 px-8">
-                    Claim Subdomain
+                    Get Subdomain
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
