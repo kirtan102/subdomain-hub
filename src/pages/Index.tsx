@@ -419,7 +419,7 @@ export default function Index() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="relative group/btn w-full bg-foreground text-background rounded-xl h-10 font-medium shadow-input hover:bg-foreground/90 transition-colors disabled:opacity-50"
+                  className="relative group/btn overflow-hidden w-full bg-foreground text-background rounded-xl h-10 font-medium hover:bg-foreground/90 transition-colors disabled:opacity-50"
                 >
                   {isSubmitting ? "Sending..." : "Send Message →"}
                   <BottomGradient />
