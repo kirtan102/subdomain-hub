@@ -54,10 +54,10 @@ export default function Index() {
         <div className="absolute inset-0 grid-background" />
         
         <div className="container relative mx-auto px-4 text-center">
-          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-foreground">
+          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
             Get your subdomain
             <br />
-            <span className="text-muted-foreground">in seconds.</span>
+            in seconds.
           </h1>
 
           <p className="animate-slide-up opacity-0 stagger-2 text-lg text-muted-foreground max-w-lg mx-auto mb-10">
