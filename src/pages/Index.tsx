@@ -106,6 +106,7 @@ export default function Index() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -296,8 +297,13 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {pricingPlans.map((plan, index) => (
+          <div 
+            className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+            onMouseLeave={() => setHoveredPlan(null)}
+          >
+            {pricingPlans.map((plan, index) => {
+              const isHighlighted = hoveredPlan ? hoveredPlan === plan.name : plan.popular;
+              return (
               <motion.div
                 key={plan.name}
                 initial={{ opacity: 0, y: 30 }}
@@ -312,12 +318,13 @@ export default function Index() {
                   y: -8,
                   transition: { duration: 0.3, ease: "easeOut" }
                 }}
-                className={`glass glass-hover rounded-lg p-6 relative ${
-                  plan.popular ? 'ring-2 ring-foreground' : ''
+                onMouseEnter={() => setHoveredPlan(plan.name)}
+                className={`glass glass-hover rounded-lg p-6 relative transition-all duration-300 ${
+                  isHighlighted ? 'ring-2 ring-foreground' : 'ring-0'
                 }`}
               >
                 {plan.popular && (
-                  <motion.div 
+                  <motion.div
                     className="absolute -top-3 left-1/2 -translate-x-1/2"
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -367,7 +374,8 @@ export default function Index() {
                   {plan.cta}
                 </motion.button>
               </motion.div>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
