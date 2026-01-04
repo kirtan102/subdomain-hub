@@ -109,7 +109,7 @@ export default function Index() {
                   </button>
                 </Link>
                 <Link to="#pricing">
-                  <button className="w-40 h-10 rounded-xl bg-background text-foreground border border-foreground text-sm font-medium hover:bg-secondary transition-colors">
+                  <button className="w-40 h-10 rounded-xl bg-background text-foreground border border-foreground text-sm font-medium hover:bg-foreground hover:text-background transition-colors">
                     View Pricing
                   </button>
                 </Link>
