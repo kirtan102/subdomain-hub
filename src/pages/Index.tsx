@@ -255,27 +255,79 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="max-w-md mx-auto space-y-3">
-            {steps.map((step, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 glass rounded-lg p-4"
-              >
-                <div className="flex-shrink-0 w-8 h-8 rounded-md bg-foreground flex items-center justify-center">
-                  <span className="text-sm font-bold text-background">{index + 1}</span>
-                </div>
-                <p className="text-foreground text-sm">{step}</p>
+          {/* Desktop: Horizontal timeline */}
+          <div className="hidden lg:block max-w-5xl mx-auto">
+            <div className="relative">
+              {/* Connecting line */}
+              <div className="absolute top-8 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-border to-transparent" />
+              
+              <div className="grid grid-cols-4 gap-6">
+                {steps.map((step, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.5, delay: index * 0.15 }}
+                    className="relative flex flex-col items-center text-center"
+                  >
+                    {/* Step number circle */}
+                    <motion.div 
+                      className="relative z-10 w-16 h-16 rounded-full bg-background border-2 border-foreground flex items-center justify-center mb-6"
+                      whileHover={{ scale: 1.1, borderColor: "hsl(var(--primary))" }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <span className="text-xl font-bold text-foreground">{index + 1}</span>
+                    </motion.div>
+                    
+                    {/* Step text */}
+                    <p className="text-foreground font-medium text-sm">{step}</p>
+                  </motion.div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
 
-          <div className="flex justify-center mt-12">
+          {/* Mobile/Tablet: Vertical timeline */}
+          <div className="lg:hidden max-w-sm mx-auto">
+            <div className="relative">
+              {/* Vertical connecting line */}
+              <div className="absolute top-0 bottom-0 left-8 w-[2px] bg-gradient-to-b from-border via-border to-transparent" />
+              
+              <div className="space-y-8">
+                {steps.map((step, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-30px" }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="relative flex items-center gap-6"
+                  >
+                    {/* Step number circle */}
+                    <div className="relative z-10 flex-shrink-0 w-16 h-16 rounded-full bg-background border-2 border-foreground flex items-center justify-center">
+                      <span className="text-xl font-bold text-foreground">{index + 1}</span>
+                    </div>
+                    
+                    {/* Step text */}
+                    <p className="text-foreground font-medium">{step}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center mt-16">
             {!user && (
               <Link to="/auth?mode=signup">
-                <button className="h-10 px-6 rounded-xl bg-foreground text-background border border-foreground text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors">
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="h-12 px-8 rounded-full bg-foreground text-background border border-foreground text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors"
+                >
                   Start Now
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </motion.button>
               </Link>
             )}
           </div>
