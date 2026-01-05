@@ -2,3 +2,9 @@ project_id = "rnalpgckwxhrgsltchui"
 
 [functions.create-dns-record]
 verify_jwt = false
+
+[functions.delete-dns-record]
+verify_jwt = false
+
+[functions.check-subdomain]
+verify_jwt = false

@@ -8,13 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubdomainRequests, useInvalidateSubdomainRequests } from "@/hooks/useSubdomainRequests";
-import { 
-  Plus, 
+import {
+  Plus,
   Search,
   Inbox,
   Loader2,
   Pencil,
+  Lock,
+  Trash2,
 } from "lucide-react";
+import { useSubscription } from "@/hooks/useSubscription";
 import {
   Dialog,
   DialogContent,
@@ -30,17 +33,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { RecordTypeBadge } from "@/components/RecordTypeBadge";
 import { StatusBadge } from "@/components/StatusBadge";
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   const { data: requests = [], isLoading: loading } = useSubdomainRequests();
   const invalidateRequests = useInvalidateSubdomainRequests();
+  const { plan } = useSubscription();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -79,7 +98,7 @@ export default function Dashboard() {
 
       <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -110,7 +129,7 @@ export default function Dashboard() {
                 className="pl-10 h-11 bg-secondary/30 border-border/50 rounded-lg focus:border-primary/50"
               />
             </div>
-            <Button 
+            <Button
               variant="outline"
               onClick={() => setSearchQuery("")}
               disabled={!searchQuery}
@@ -118,23 +137,45 @@ export default function Dashboard() {
             >
               Search
             </Button>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="h-11 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add record
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md border-border/50 bg-background/95 backdrop-blur-xl">
-                <DialogHeader>
-                  <DialogTitle className="text-xl">Add DNS Record</DialogTitle>
-                </DialogHeader>
-                <RequestForm onSuccess={() => {
-                  setDialogOpen(false);
-                  invalidateRequests();
-                }} />
-              </DialogContent>
-            </Dialog>
+
+            {(() => {
+              // Logic to check limits
+              const activeRequestsCount = requests?.filter(r => r.status !== 'rejected').length || 0;
+              const limit = plan === 'free' ? 1 : plan === 'pro' ? 5 : Infinity;
+              const isLimitReached = activeRequestsCount >= limit;
+
+              if (isLimitReached) {
+                return (
+                  <Button
+                    className="h-11 px-5 rounded-lg bg-secondary text-muted-foreground cursor-not-allowed border border-border/50"
+                    disabled
+                  >
+                    <Lock className="w-4 h-4 mr-2" />
+                    Limit Reached ({activeRequestsCount}/{limit})
+                  </Button>
+                );
+              }
+
+              return (
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="h-11 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add record
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md border-border/50 bg-background/95 backdrop-blur-xl">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl">Add DNS Record</DialogTitle>
+                    </DialogHeader>
+                    <RequestForm onSuccess={() => {
+                      setDialogOpen(false);
+                      invalidateRequests();
+                    }} />
+                  </DialogContent>
+                </Dialog>
+              );
+            })()}
           </div>
         </motion.div>
 
@@ -161,12 +202,12 @@ export default function Dashboard() {
                 {searchQuery ? "No matching records" : "No DNS records yet"}
               </h3>
               <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-                {searchQuery 
-                  ? "Try a different search term." 
+                {searchQuery
+                  ? "Try a different search term."
                   : "Get started by adding your first DNS record."}
               </p>
               {!searchQuery && (
-                <Button 
+                <Button
                   onClick={() => setDialogOpen(true)}
                   className="h-11 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
                 >
@@ -218,14 +259,81 @@ export default function Dashboard() {
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-primary hover:text-primary/80 hover:bg-transparent p-0 h-auto font-medium"
-                      >
-                        <Pencil className="w-3.5 h-3.5 mr-1.5" />
-                        Edit
-                      </Button>
+                      {request.status !== 'pending' && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-0 h-auto font-medium"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="border-border/50 bg-background/95 backdrop-blur-xl">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will permanently delete the subdomain record
+                                <span className="font-mono text-foreground mx-1">{request.subdomain}.seeky.click</span>.
+                                This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-red-500 hover:bg-red-600 rounded-xl"
+                                disabled={deletingId === request.id}
+                                onClick={async (e) => {
+                                  // Prevent dialog from closing immediately
+                                  e.preventDefault();
+
+                                  setDeletingId(request.id);
+                                  try {
+                                    const { data, error: functionError } = await supabase.functions.invoke('delete-dns-record', {
+                                      body: { requestId: request.id }
+                                    });
+
+                                    if (functionError) throw functionError;
+                                    if (data && data.success === false) {
+                                      throw new Error(data.error || "Unknown backend error");
+                                    }
+
+                                    toast({
+                                      title: "Record deleted",
+                                      description: `${request.subdomain} has been removed from Cloudflare and your account.`
+                                    });
+                                    invalidateRequests();
+                                    // Manually close dialog only after success/failure logic if needed,
+                                    // but since the record disappears from the list, the dialog might unmount.
+                                    // However, ShadUI/Radix might need manual close if we prevented default.
+                                    // Actually, since the row disappears, we don't need to close it.
+                                  } catch (error: any) {
+                                    console.error('Delete error:', error);
+                                    toast({
+                                      variant: "destructive",
+                                      title: "Failed to delete",
+                                      description: error.message || "Could not delete record."
+                                    });
+                                  } finally {
+                                    setDeletingId(null);
+                                  }
+                                }}
+                              >
+                                {deletingId === request.id ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    Deleting...
+                                  </>
+                                ) : (
+                                  "Delete Record"
+                                )}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
                     </TableCell>
                   </motion.tr>
                 ))}
