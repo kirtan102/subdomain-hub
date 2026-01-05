@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,15 +12,18 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Loader2, Globe, Check, X } from "lucide-react";
+import { Loader2, Globe, Check, X, AlertCircle, Lock } from "lucide-react";
 import { z } from "zod";
+import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const subdomainSchema = z.object({
   subdomain: z.string()
-    .min(1, "Subdomain is required")
+    .min(3, "Subdomain must be at least 3 characters")
     .max(63, "Subdomain must be 63 characters or less")
     .regex(/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/, "Only lowercase letters, numbers, and hyphens allowed"),
-  recordType: z.enum(['A', 'CNAME', 'TXT', 'SRV']),
+  recordType: z.enum(['A', 'CNAME', 'TXT', 'SRV', 'MX']),
   targetValue: z.string().min(1, "Target value is required").max(255, "Target value too long"),
   ttl: z.number().min(60).max(86400),
 });
@@ -32,68 +35,66 @@ interface RequestFormProps {
 
 export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormProps) {
   const { user } = useAuth();
+  const { isPro, isLoading: subscriptionLoading } = useSubscription();
   const [loading, setLoading] = useState(false);
   const [subdomain, setSubdomain] = useState("");
-  const [recordType, setRecordType] = useState<'A' | 'CNAME' | 'TXT' | 'SRV'>('A');
+  const [recordType, setRecordType] = useState<'A' | 'CNAME' | 'TXT' | 'SRV' | 'MX'>('A');
   const [targetValue, setTargetValue] = useState("");
   const [ttl, setTtl] = useState(3600);
-  const [checkingAvailability, setCheckingAvailability] = useState(false);
-  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+
+  const debouncedSubdomain = useDebounce(subdomain, 1200);
 
   const placeholders = {
     A: "192.168.1.1",
     CNAME: "example.com",
     TXT: "v=spf1 include:example.com ~all",
     SRV: "0 5 5269 xmpp.example.com",
+    MX: "10 mail.example.com",
   };
 
-  // Debounced subdomain availability check
-  const checkAvailability = useCallback(async (value: string) => {
-    if (!value || value.length < 1) {
-      setIsAvailable(null);
-      return;
-    }
+  const isTooShort = subdomain.length > 0 && subdomain.length < 3;
 
-    // Validate format first
-    const formatValid = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(value);
-    if (!formatValid) {
-      setIsAvailable(null);
-      return;
-    }
+  const { data: isAvailable, isLoading: checkingAvailability } = useQuery({
+    queryKey: ['subdomain-check', debouncedSubdomain],
+    queryFn: async ({ signal }) => {
+      // Logic requirement: NEVER fire if length < 3
+      if (!debouncedSubdomain || debouncedSubdomain.length < 3) return null;
 
-    setCheckingAvailability(true);
-    try {
-      const { data, error } = await supabase
-        .rpc('is_subdomain_available', { subdomain_to_check: value });
+      const { data, error } = await supabase.functions.invoke('check-subdomain', {
+        body: { subdomain: debouncedSubdomain }
+      });
 
       if (error) throw error;
-      setIsAvailable(data === true);
-    } catch (error) {
-      console.error('Error checking availability:', error);
-      setIsAvailable(null);
-    } finally {
-      setCheckingAvailability(false);
-    }
-  }, []);
+      return data.available;
+    },
+    enabled: debouncedSubdomain.length >= 3,
+    staleTime: 60 * 1000,
+  });
 
-  useEffect(() => {
-    // Reset availability state immediately when user starts typing
-    setIsAvailable(null);
-    
-    // Debounce the API call by 500ms
-    const timeoutId = setTimeout(() => {
-      checkAvailability(subdomain);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [subdomain, checkAvailability]);
+  const handleSubdomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Sanitization: Lowercase and remove invalid characters immediately
+    const sanitized = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    setSubdomain(sanitized);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!user) {
       toast.error("You must be logged in to submit a request");
       return;
+    }
+
+    // Additional client-side check for plan restrictions
+    if (!isPro) {
+      if (recordType === 'TXT' || recordType === 'SRV' || recordType === 'MX') {
+        toast.error("Upgrade to Pro to use this record type");
+        return;
+      }
+      if (ttl !== 3600) {
+        toast.error("Upgrade to Pro to use custom TTL");
+        return;
+      }
     }
 
     const validation = subdomainSchema.safeParse({
@@ -110,6 +111,11 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
 
     if (isAvailable === false) {
       toast.error("This subdomain is already taken");
+      return;
+    }
+
+    if (subdomain.length < 3) {
+      toast.error("Subdomain must be at least 3 characters");
       return;
     }
 
@@ -134,6 +140,7 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
       setTtl(3600);
       onSuccess?.();
     } catch (error: any) {
+      // Handle the trigger exception message
       toast.error(error.message || "Failed to submit request");
     } finally {
       setLoading(false);
@@ -151,16 +158,16 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
               id="subdomain"
               placeholder="myserver"
               value={subdomain}
-              onChange={(e) => setSubdomain(e.target.value.toLowerCase())}
+              onChange={handleSubdomainChange}
               className="rounded-r-none border-r-0 focus-visible:z-10 pr-10"
             />
             {subdomain && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
                 {checkingAvailability ? (
                   <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                ) : isAvailable === true ? (
+                ) : !isTooShort && isAvailable === true ? (
                   <Check className="w-4 h-4 text-green-500" />
-                ) : isAvailable === false ? (
+                ) : !isTooShort && isAvailable === false ? (
                   <X className="w-4 h-4 text-red-500" />
                 ) : null}
               </div>
@@ -170,15 +177,21 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
             <span className="text-muted-foreground font-mono text-sm">.{domain}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <p className="text-xs text-muted-foreground">
-            Lowercase letters, numbers, and hyphens only
-          </p>
-          {subdomain && isAvailable === false && (
+        <div className="flex items-center gap-2 h-5">
+          {/* using h-5 to reserve space so layout doesn't jump too much */}
+          {isTooShort ? (
+            <p className="text-xs text-yellow-600 flex items-center gap-1">
+              <AlertCircle className="w-3 h-3" />
+              Subdomain must be at least 3 characters
+            </p>
+          ) : subdomain && !checkingAvailability && isAvailable === false ? (
             <p className="text-xs text-red-500">This subdomain is already taken</p>
-          )}
-          {subdomain && isAvailable === true && (
+          ) : subdomain && !checkingAvailability && isAvailable === true ? (
             <p className="text-xs text-green-500">Available!</p>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Lowercase letters, numbers, and hyphens only
+            </p>
           )}
         </div>
       </div>
@@ -193,10 +206,35 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
           <SelectContent>
             <SelectItem value="A">A Record (IPv4 Address)</SelectItem>
             <SelectItem value="CNAME">CNAME (Alias)</SelectItem>
-            <SelectItem value="TXT">TXT (Text Record)</SelectItem>
-            <SelectItem value="SRV">SRV (Service)</SelectItem>
+
+            <SelectItem value="TXT" disabled={!isPro} className="flex justify-between items-center group">
+              <span className="flex items-center w-full justify-between">
+                TXT (Text Record)
+                {!isPro && <Lock className="w-3 h-3 ml-2 text-muted-foreground" />}
+              </span>
+            </SelectItem>
+
+            <SelectItem value="SRV" disabled={!isPro} className="flex justify-between items-center group">
+              <span className="flex items-center w-full justify-between">
+                SRV (Service)
+                {!isPro && <Lock className="w-3 h-3 ml-2 text-muted-foreground" />}
+              </span>
+            </SelectItem>
+
+            <SelectItem value="MX" disabled={!isPro} className="flex justify-between items-center group">
+              <span className="flex items-center w-full justify-between">
+                MX (Mail Exchange)
+                {!isPro && <Lock className="w-3 h-3 ml-2 text-muted-foreground" />}
+              </span>
+            </SelectItem>
           </SelectContent>
         </Select>
+        {!isPro && (recordType === 'TXT' || recordType === 'SRV' || recordType === 'MX') && (
+          <p className="text-xs text-amber-500 flex items-center gap-1">
+            <Lock className="w-3 h-3" />
+            Upgrade to Pro to use this record type
+          </p>
+        )}
       </div>
 
       {/* Target Value */}
@@ -213,6 +251,7 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
           {recordType === 'CNAME' && "Enter a domain name (e.g., example.com)"}
           {recordType === 'TXT' && "Enter the text content for this record"}
           {recordType === 'SRV' && "Enter priority, weight, port, and target"}
+          {recordType === 'MX' && "Enter priority and mail server (e.g., 10 mail.example.com)"}
         </p>
       </div>
 
@@ -224,12 +263,33 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="60">1 minute</SelectItem>
-            <SelectItem value="300">5 minutes</SelectItem>
+            <SelectItem value="60" disabled={!isPro} className="flex justify-between items-center group">
+              <span className="flex items-center w-full justify-between">
+                1 minute
+                {!isPro && <Lock className="w-3 h-3 ml-2 text-muted-foreground" />}
+              </span>
+            </SelectItem>
+            <SelectItem value="300" disabled={!isPro} className="flex justify-between items-center group">
+              <span className="flex items-center w-full justify-between">
+                5 minutes
+                {!isPro && <Lock className="w-3 h-3 ml-2 text-muted-foreground" />}
+              </span>
+            </SelectItem>
             <SelectItem value="3600">1 hour</SelectItem>
-            <SelectItem value="86400">24 hours</SelectItem>
+            <SelectItem value="86400" disabled={!isPro} className="flex justify-between items-center group">
+              <span className="flex items-center w-full justify-between">
+                24 hours
+                {!isPro && <Lock className="w-3 h-3 ml-2 text-muted-foreground" />}
+              </span>
+            </SelectItem>
           </SelectContent>
         </Select>
+        {!isPro && ttl !== 3600 && (
+          <p className="text-xs text-amber-500 flex items-center gap-1">
+            <Lock className="w-3 h-3" />
+            Upgrade to Pro to use custom TTL
+          </p>
+        )}
       </div>
 
       {/* Preview */}
@@ -246,11 +306,26 @@ export function RequestForm({ onSuccess, domain = "seeky.click" }: RequestFormPr
         </code>
       </div>
 
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={
+          loading ||
+          isTooShort ||
+          isAvailable !== true ||
+          checkingAvailability ||
+          subdomain !== debouncedSubdomain
+        }
+      >
         {loading ? (
           <>
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             Submitting...
+          </>
+        ) : checkingAvailability || subdomain !== debouncedSubdomain ? (
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            Checking Availability...
           </>
         ) : (
           "Submit Request"

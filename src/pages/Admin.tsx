@@ -26,10 +26,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAllSubdomainRequests, useInvalidateSubdomainRequests } from "@/hooks/useSubdomainRequests";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { 
-  Check, 
-  X, 
-  Loader2, 
+import {
+  Check,
+  X,
+  Loader2,
   RefreshCw,
   Shield,
   AlertTriangle,
@@ -101,7 +101,7 @@ export default function Admin() {
 
   async function handleReject() {
     if (!selectedRequest) return;
-    
+
     setActionLoading(selectedRequest.id);
 
     try {
@@ -133,33 +133,33 @@ export default function Admin() {
   const uniqueUsers = new Set(requests.map(r => r.user_id)).size;
 
   const stats = [
-    { 
-      label: 'Total Requests', 
-      value: requests.length, 
+    {
+      label: 'Total Requests',
+      value: requests.length,
       icon: LayoutGrid,
       gradient: 'from-blue-500/20 to-purple-500/20',
       borderColor: 'border-blue-500/30',
       iconColor: 'text-blue-400'
     },
-    { 
-      label: 'Pending Review', 
-      value: pendingRequests.length, 
+    {
+      label: 'Pending Review',
+      value: pendingRequests.length,
       icon: Clock,
       gradient: 'from-yellow-500/20 to-orange-500/20',
       borderColor: 'border-yellow-500/30',
       iconColor: 'text-yellow-400'
     },
-    { 
-      label: 'Approved', 
-      value: approvedRequests.length, 
+    {
+      label: 'Approved',
+      value: approvedRequests.length,
       icon: CheckCircle2,
       gradient: 'from-green-500/20 to-emerald-500/20',
       borderColor: 'border-green-500/30',
       iconColor: 'text-green-400'
     },
-    { 
-      label: 'Rejected', 
-      value: rejectedRequests.length, 
+    {
+      label: 'Rejected',
+      value: rejectedRequests.length,
       icon: XCircle,
       gradient: 'from-red-500/20 to-pink-500/20',
       borderColor: 'border-red-500/30',
@@ -181,14 +181,14 @@ export default function Admin() {
 
       <main className="flex-1 container mx-auto px-4 pt-28 pb-12">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-10"
         >
           <div className="flex items-center gap-4">
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.4 }}
@@ -207,9 +207,9 @@ export default function Admin() {
           </div>
 
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Button 
-              variant="outline" 
-              onClick={() => refetch()} 
+            <Button
+              variant="outline"
+              onClick={() => refetch()}
               disabled={loading}
               className="h-11 px-5 rounded-xl border-border/50 hover:border-foreground/30 transition-all"
             >
@@ -246,7 +246,7 @@ export default function Admin() {
 
         {/* Pending Alert */}
         {pendingRequests.length > 0 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.4 }}
@@ -273,7 +273,7 @@ export default function Admin() {
             <h2 className="text-lg font-semibold">All Requests</h2>
             <p className="text-sm text-muted-foreground">Manage and review subdomain requests from users</p>
           </div>
-          
+
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -328,8 +328,8 @@ export default function Admin() {
                       </TableCell>
                       <TableCell>
                         <code className="font-mono text-sm text-muted-foreground">
-                          {request.target_value.length > 25 
-                            ? `${request.target_value.slice(0, 25)}...` 
+                          {request.target_value.length > 25
+                            ? `${request.target_value.slice(0, 25)}...`
                             : request.target_value}
                         </code>
                       </TableCell>
@@ -424,14 +424,14 @@ export default function Admin() {
             </div>
           </div>
           <DialogFooter className="gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setRejectDialogOpen(false)}
               className="rounded-xl"
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleReject}
               disabled={actionLoading === selectedRequest?.id}
               className="rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300"

@@ -20,8 +20,8 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  const { data: isAdmin = false } = useIsAdmin(user?.id);
+
+  const { data: isAdmin = false, isLoading: roleLoading } = useIsAdmin(user?.id);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -45,7 +45,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
 
   async function signUp(email: string, password: string, fullName?: string) {
     const redirectUrl = `${window.location.origin}/`;
-    
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -56,7 +56,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
         },
       },
     });
-    
+
     return { error };
   }
 
@@ -65,7 +65,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
       email,
       password,
     });
-    
+
     return { error };
   }
 
@@ -73,10 +73,10 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/auth`,
       },
     });
-    
+
     return { error };
   }
 
@@ -88,7 +88,7 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
     <AuthContext.Provider value={{
       user,
       session,
-      loading,
+      loading: loading || (!!user && roleLoading),
       isAdmin,
       signUp,
       signIn,
