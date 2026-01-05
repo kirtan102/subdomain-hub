@@ -25,7 +25,6 @@ async function fetchUserRequests(userId: string): Promise<SubdomainRequest[]> {
     .from('subdomain_requests')
     .select('*')
     .eq('user_id', userId)
-    .neq('status', 'rejected') // Hide rejected requests from user dashboard
     .order('created_at', { ascending: false });
 
   if (error) throw error;
@@ -48,7 +47,7 @@ async function fetchAllRequests(): Promise<SubdomainRequest[]> {
     .in('id', userIds);
 
   const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
-
+  
   return data.map(r => ({
     ...r,
     profiles: profileMap.get(r.user_id) || undefined,
@@ -79,7 +78,7 @@ export function useAllSubdomainRequests() {
 
 export function useInvalidateSubdomainRequests() {
   const queryClient = useQueryClient();
-
+  
   return () => {
     queryClient.invalidateQueries({ queryKey: ['subdomainRequests'] });
   };

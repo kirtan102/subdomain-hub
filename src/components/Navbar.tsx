@@ -50,15 +50,16 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out ${scrolled
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out ${
+        scrolled
           ? "bg-card/60 backdrop-blur-xl border border-border/50 shadow-lg rounded-full px-4 md:px-8 py-3"
           : "bg-transparent px-4 py-2"
-        }`}
+      }`}
       style={{ width: scrolled ? "auto" : "100%", maxWidth: scrolled ? "900px" : "100%", minWidth: scrolled ? "auto" : "auto" }}
     >
       <div className={`flex items-center justify-between ${scrolled ? "gap-4 md:gap-16" : "gap-8"} ${scrolled ? "" : "container mx-auto"}`}>
-        <Link
-          to="/"
+        <Link 
+          to="/" 
           onClick={(e) => {
             if (window.location.pathname === '/') {
               e.preventDefault();
@@ -88,10 +89,10 @@ export function Navbar() {
                   </Button>
                 </Link>
               )}
-
+              
               {isAdmin && (
                 <Link to="/admin" className="hidden sm:block">
-                  <Button variant="ghost" size="sm" className="rounded-full">
+                  <Button variant="outline" size="sm" className="rounded-full">
                     <Shield className="w-4 h-4 mr-2" />
                     Admin
                   </Button>

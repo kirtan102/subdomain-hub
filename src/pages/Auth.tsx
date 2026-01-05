@@ -52,10 +52,10 @@ export default function Auth() {
             <Logo />
           </div>
           <h2 className="font-bold text-xl text-foreground text-center">
-            Welcome to Subdomain Hub
+            Welcome to is-a.tech
           </h2>
           <p className="text-muted-foreground text-sm max-w-sm mt-2 text-center mx-auto">
-            Sign in with Google to manage your subdomains
+            Sign in to manage your subdomains
           </p>
 
           <div className="my-8">

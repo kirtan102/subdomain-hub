@@ -12,7 +12,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { TextReveal } from "@/components/ui/text-reveal";
 import { TextShimmer } from "@/components/ui/text-shimmer";
-import { useSubscription } from "@/hooks/useSubscription";
 import {
   Accordion,
   AccordionContent,
@@ -20,9 +19,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  Globe,
-  Shield,
-  Zap,
+  Globe, 
+  Shield, 
+  Zap, 
   Server,
   ArrowRight,
   Check,
@@ -113,7 +112,7 @@ export default function Index() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -170,7 +169,7 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Grid background with radial fade */}
         <div className="absolute inset-0 grid-background" />
-
+        
         <div className="container relative mx-auto px-4 flex flex-col items-center justify-center text-center">
           <TextShimmer className="text-sm font-medium mb-4 block" duration={1.5} repeatDelay={0.5}>
             Give your project a professional URL
@@ -182,7 +181,7 @@ export default function Index() {
             in seconds.
           </h1>
 
-          <TextReveal
+          <TextReveal 
             text="Request custom subdomains for your projects. Fast, secure, and powered by Cloudflare."
             staggerDelay={0.05}
             className="text-lg text-muted-foreground max-w-lg mx-auto mb-10"
@@ -195,7 +194,7 @@ export default function Index() {
                 {user && <ArrowRight className="w-4 h-4" />}
               </button>
             </Link>
-            <button
+            <button 
               onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
               className="w-40 h-10 rounded-xl bg-background text-foreground border border-foreground text-sm font-medium transition-colors"
             >
@@ -206,7 +205,7 @@ export default function Index() {
       </section>
 
       {/* Features */}
-      <section
+      <section 
         ref={(el) => { sectionsRef.current[0] = el; }}
         className="py-24 border-t border-border scroll-reveal"
       >
@@ -238,7 +237,7 @@ export default function Index() {
       </section>
 
       {/* How it works */}
-      <section
+      <section 
         ref={(el) => { sectionsRef.current[1] = el; }}
         className="py-24 border-t border-border scroll-reveal"
       >
@@ -257,7 +256,7 @@ export default function Index() {
             <div className="relative">
               {/* Connecting line */}
               <div className="absolute top-8 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-border to-transparent" />
-
+              
               <div className="grid grid-cols-4 gap-6">
                 {steps.map((step, index) => (
                   <motion.div
@@ -269,14 +268,14 @@ export default function Index() {
                     className="relative flex flex-col items-center text-center"
                   >
                     {/* Step number circle */}
-                    <motion.div
+                    <motion.div 
                       className="relative z-10 w-16 h-16 rounded-full bg-background border-2 border-foreground flex items-center justify-center mb-6"
                       whileHover={{ scale: 1.1, borderColor: "hsl(var(--primary))" }}
                       transition={{ duration: 0.2 }}
                     >
                       <span className="text-xl font-bold text-foreground">{index + 1}</span>
                     </motion.div>
-
+                    
                     {/* Step text */}
                     <p className="text-foreground font-medium text-sm">{step}</p>
                   </motion.div>
@@ -290,7 +289,7 @@ export default function Index() {
             <div className="relative">
               {/* Vertical connecting line */}
               <div className="absolute top-0 bottom-0 left-8 w-[2px] bg-gradient-to-b from-border via-border to-transparent" />
-
+              
               <div className="space-y-8">
                 {steps.map((step, index) => (
                   <motion.div
@@ -305,7 +304,7 @@ export default function Index() {
                     <div className="relative z-10 flex-shrink-0 w-16 h-16 rounded-full bg-background border-2 border-foreground flex items-center justify-center">
                       <span className="text-xl font-bold text-foreground">{index + 1}</span>
                     </div>
-
+                    
                     {/* Step text */}
                     <p className="text-foreground font-medium">{step}</p>
                   </motion.div>
@@ -316,7 +315,7 @@ export default function Index() {
 
           <div className="flex justify-center mt-16">
             <Link to={user ? "/dashboard" : "/auth?mode=signup"}>
-              <motion.button
+              <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 className="h-12 px-8 rounded-full bg-foreground text-background border border-foreground text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors"
@@ -330,7 +329,7 @@ export default function Index() {
       </section>
 
       {/* Pricing */}
-      <section
+      <section 
         id="pricing"
         ref={(el) => { sectionsRef.current[2] = el; }}
         className="py-24 border-t border-border scroll-reveal"
@@ -345,110 +344,104 @@ export default function Index() {
             </p>
           </div>
 
-          <div
+          <div 
             className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+            onMouseLeave={() => setHoveredPlan(null)}
           >
             {pricingPlans.map((plan, index) => {
-              const { plan: currentPlan, isLoading: planLoading } = useSubscription();
-              // Highlight if it's the current plan (logged in) OR if it's popular (logged out)
-              // Actually, better UX: If logged in, highlight ACTIVE plan. If not, highlight POPULAR.
-              const isCurrentPlan = currentPlan === plan.name.toLowerCase();
-              const isHighlighted = (!planLoading && currentPlan !== 'free' && isCurrentPlan) || (!user && plan.popular);
-
-              const handleUpgrade = () => {
-                if (plan.name === "Pro") {
-                  alert("Payment integration coming soon!");
-                }
-              };
-
-              // Determine Button State
-              let ButtonComponent;
-
-              if (isCurrentPlan) {
-                ButtonComponent = (
-                  <button
-                    disabled
-                    className="w-full h-10 rounded-xl text-sm font-medium transition-colors bg-secondary text-secondary-foreground mt-auto opacity-50 cursor-not-allowed"
+              const isHighlighted = hoveredPlan ? hoveredPlan === plan.name : plan.popular;
+              return (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.15,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                whileHover={{ 
+                  y: -8,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+                onMouseEnter={() => setHoveredPlan(plan.name)}
+                className={`glass glass-hover rounded-lg p-6 relative transition-all duration-300 ${
+                  isHighlighted ? 'ring-2 ring-foreground' : 'ring-0'
+                }`}
+              >
+                {plan.popular && (
+                  <motion.div
+                    className="absolute -top-3 left-1/2 -translate-x-1/2"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4, duration: 0.3 }}
                   >
-                    Current Plan
-                  </button>
-                );
-              } else if (plan.name === "Enterprise") {
-                ButtonComponent = (
-                  <button
+                    <span className="bg-foreground text-background text-xs font-medium px-3 py-1 rounded-full">
+                      Most Popular
+                    </span>
+                  </motion.div>
+                )}
+                <div className="text-center mb-6">
+                  <h3 className="text-lg font-semibold mb-2">{plan.name}</h3>
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground text-sm ml-1">/{plan.period}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{plan.description}</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {plan.features.map((feature, featureIndex) => (
+                    <motion.li 
+                      key={feature} 
+                      className="flex items-center gap-2 text-sm"
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ 
+                        delay: index * 0.15 + featureIndex * 0.05 + 0.2,
+                        duration: 0.3
+                      }}
+                    >
+                      <Check className="w-4 h-4 text-foreground flex-shrink-0" />
+                      <span>{feature}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+                {plan.name === "Enterprise" ? (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="w-full h-10 rounded-xl text-sm font-medium transition-colors bg-foreground text-background hover:bg-foreground/90 mt-auto"
+                    className="w-full h-10 rounded-xl text-sm font-medium transition-colors bg-background text-foreground border border-foreground"
                   >
                     {plan.cta}
-                  </button>
-                );
-              } else if (plan.name === "Pro") {
-                ButtonComponent = (
-                  <button
-                    onClick={handleUpgrade}
-                    className="w-full h-10 rounded-xl text-sm font-medium transition-colors bg-foreground text-background hover:bg-foreground/90 mt-auto"
-                  >
-                    {plan.cta}
-                  </button>
-                );
-              } else {
-                // Free plan but not current (e.g. user is Pro? Downgrade?) 
-                // Or user not logged in -> Sign up
-                ButtonComponent = (
-                  <Link to="/auth?mode=signup" className="w-full mt-auto">
-                    <button
-                      className="w-full h-10 rounded-xl text-sm font-medium transition-colors bg-foreground text-background hover:bg-foreground/90"
+                  </motion.button>
+                ) : (
+                  <Link to="/auth?mode=signup" className="w-full">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full h-10 rounded-xl text-sm font-medium transition-colors ${
+                        plan.popular
+                          ? 'bg-foreground text-background hover:bg-foreground/90'
+                          : 'bg-background text-foreground border border-foreground'
+                      }`}
                     >
                       {plan.cta}
-                    </button>
+                    </motion.button>
                   </Link>
-                );
-              }
-
-              return (
-                <div
-                  key={plan.name}
-                  className={`glass glass-hover rounded-lg p-6 relative transition-all duration-300 flex flex-col ${isHighlighted ? 'ring-2 ring-foreground' : 'ring-0'
-                    }`}
-                >
-                  {plan.popular && (
-                    <div
-                      className="absolute -top-3 left-1/2 -translate-x-1/2"
-                    >
-                      <span className="bg-foreground text-background text-xs font-medium px-3 py-1 rounded-full">
-                        Most Popular
-                      </span>
-                    </div>
-                  )}
-                  <div className="text-center mb-6">
-                    <h3 className="text-lg font-semibold mb-2">{plan.name}</h3>
-                    <div className="mb-2">
-                      <span className="text-4xl font-bold">{plan.price}</span>
-                      <span className="text-muted-foreground text-sm ml-1">/{plan.period}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{plan.description}</p>
-                  </div>
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li
-                        key={feature}
-                        className="flex items-center gap-2 text-sm"
-                      >
-                        <Check className="w-4 h-4 text-foreground flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {ButtonComponent}
-                </div>
-              );
+                )}
+              </motion.div>
+            );
             })}
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section
+      <section 
         ref={(el) => { sectionsRef.current[3] = el; }}
         className="py-24 border-t border-border scroll-reveal"
       >
@@ -511,7 +504,7 @@ export default function Index() {
       </section>
 
       {/* Contact */}
-      <section
+      <section 
         id="contact"
         ref={(el) => { sectionsRef.current[4] = el; }}
         className="py-24 border-t border-border scroll-reveal"
