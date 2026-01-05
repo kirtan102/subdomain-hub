@@ -175,11 +175,11 @@ export default function Index() {
             Give your project a professional URL
           </TextShimmer>
 
-          <h1 className="animate-slide-up opacity-0 stagger-1 text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade">
-            Get your subdomain
-            <br />
-            in seconds.
-          </h1>
+          <TextReveal 
+            text="Get your subdomain in seconds."
+            staggerDelay={0.08}
+            className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-gradient-fade"
+          />
 
           <TextReveal 
             text="Request custom subdomains for your projects. Fast, secure, and powered by Cloudflare."
